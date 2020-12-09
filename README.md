@@ -2,6 +2,8 @@
 
 <h4 align='center'>No nonsense floating terminal written in lua.</h4>
 
+![FTerm](./fterm.webp "FTerm")
+
 ### Requirements
 
 -   Neovim Nightly
