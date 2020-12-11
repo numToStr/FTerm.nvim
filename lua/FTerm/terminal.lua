@@ -31,23 +31,7 @@ end
 
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(c)
-    -- Default dimensions
-    local d = vim.tbl_extend('keep', c.dimensions or {}, self.config.dimensions)
-
-    local ln = vim.o.lines
-    local height = math.ceil(ln * d.height - 4)
-    local row = math.ceil((ln - height) * d.row - 1)
-
-    local cl = vim.o.columns
-    local width = math.ceil(cl * d.width)
-    local col = math.ceil((cl - width) * d.col)
-
-    c.dimensions = {
-        height = height,
-        width = width,
-        row = row,
-        col = col
-    }
+    c.dimensions = vim.tbl_extend('keep', c.dimensions or {}, self.config.dimensions)
 
     self.config = c
 end
@@ -75,6 +59,30 @@ function Terminal:restore_cursor()
         self.last_pos = nil
     end
 end
+
+-- Terminal:win_dim return window dimensions
+function Terminal:win_dim()
+    -- get dimensions
+    local d = self.config.dimensions
+    local cl = vim.o.columns
+    local ln = vim.o.lines
+
+    -- calculate our floating window size
+    local width = math.ceil(cl * d.width)
+    local height = math.ceil(ln * d.height - 4)
+
+    -- and its starting position
+    local col = math.ceil((cl - width) * d.col)
+    local row = math.ceil((ln - height) * d.row - 1)
+
+    return {
+        width = width,
+        height = height,
+        col = col,
+        row = row,
+    }
+end
+
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
 function Terminal:create_buf(name, do_border, height, width)
@@ -133,10 +141,11 @@ function Terminal:term()
     cmd("autocmd! TermClose <buffer> lua On_close()")
 end
 
+-- Terminal:open does all the magic of opening terminal
 function Terminal:open()
     self:remember_cursor()
 
-    local dim = self.config.dimensions
+    local dim = self:win_dim()
     local opts = {
         relative = 'editor',
         style = 'minimal',
@@ -164,6 +173,7 @@ function Terminal:open()
     self:store('fg', win, buf)
 end
 
+-- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
 function Terminal:close(force)
     if next(self.wins) == nil then
         do return end
@@ -194,6 +204,7 @@ function Terminal:close(force)
     self:restore_cursor()
 end
 
+-- Terminal:toggle is used to toggle the terminal window
 function Terminal:toggle()
     if vim.tbl_isempty(self.wins) then
         self:open()
