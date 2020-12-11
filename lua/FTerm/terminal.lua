@@ -6,9 +6,18 @@ Terminal = {}
 
 -- Init
 function Terminal:new()
-    x = {
+    local x = {
         wins = {},
         bufs = {},
+        config = {
+            -- Dimensions are treated as percentage
+            dimensions  = {
+                height = 0.8,
+                width = 0.8,
+                row = 0.5,
+                col = 0.5
+            }
+        }
     }
 
     self.__index = self
@@ -18,6 +27,13 @@ end
 -- Just to debug
 function Terminal:debug()
     print(vim.inspect(self))
+end
+
+-- Terminal:setup takes windows configuration ie. dimensions
+function Terminal:setup(c)
+    c.dimensions = vim.tbl_extend('keep', c.dimensions or {}, self.config.dimensions)
+
+    self.config = c
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
@@ -44,6 +60,30 @@ function Terminal:restore_cursor()
     end
 end
 
+-- Terminal:win_dim return window dimensions
+function Terminal:win_dim()
+    -- get dimensions
+    local d = self.config.dimensions
+    local cl = vim.o.columns
+    local ln = vim.o.lines
+
+    -- calculate our floating window size
+    local width = math.ceil(cl * d.width)
+    local height = math.ceil(ln * d.height - 4)
+
+    -- and its starting position
+    local col = math.ceil((cl - width) * d.col)
+    local row = math.ceil((ln - height) * d.row - 1)
+
+    return {
+        width = width,
+        height = height,
+        col = col,
+        row = row,
+    }
+end
+
+
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
 function Terminal:create_buf(name, do_border, height, width)
     -- If previous buffer exists then return it
@@ -57,7 +97,7 @@ function Terminal:create_buf(name, do_border, height, width)
     if do_border then
         -- ## Border start ##
         local border_lines = { '┌' .. string.rep('─', width) .. '┐' }
-        for i=1, height do
+        for _ = 1, height do
           table.insert(border_lines, '|' .. string.rep(' ', width) .. '|')
         end
         table.insert(border_lines, '└' .. string.rep('─', width) .. '┘')
@@ -69,41 +109,8 @@ function Terminal:create_buf(name, do_border, height, width)
     return buf
 end
 
--- Terminal:win_dim return window dimensions
-function Terminal:win_dim()
-    -- get dimensions
-    local cl = vim.o.columns
-    local ln = vim.o.lines
-
-    -- calculate our floating window size
-    local width = math.ceil(cl * 0.8)
-    local height = math.ceil(ln * 0.8 - 4)
-
-    -- and its starting position
-    local col = math.ceil((cl - width) / 2)
-    local row = math.ceil((ln - height) / 2 - 1)
-
-    return {
-        width = width,
-        height = height,
-        col = col,
-        row = row,
-    }
-end
-
-function Terminal:win_opts(dim)
-    return {
-        relative = 'editor',
-        style = 'minimal',
-        width = dim.width + 2,
-        height = dim.height + 2,
-        col = dim.col - 1,
-        row = dim.row - 1,
-    }
-end
-
 -- Terminal:create_win creates a new window with a given buffer
-function Terminal:create_win(name, buf, opts, do_hl)
+function Terminal:create_win(buf, opts, do_hl)
     local win_handle = api.nvim_open_win(buf, true, opts)
 
     if do_hl then
@@ -114,7 +121,7 @@ function Terminal:create_win(name, buf, opts, do_hl)
 end
 
 -- Terminal:term opens a terminal inside a buffer
-function Terminal:term(t)
+function Terminal:term()
     if vim.tbl_isempty(self.bufs) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
         local pid = fn.termopen(os.getenv('SHELL'))
@@ -125,23 +132,31 @@ function Terminal:term(t)
 
     cmd("startinsert")
 
-    function on_close()
+    function On_close()
        self:close(true)
     end
 
     -- This fires when someone executes `exit` inside term
     -- So, in this case the buffer should also be removed instead of reusing
-    cmd("autocmd! TermClose <buffer> lua on_close()")
+    cmd("autocmd! TermClose <buffer> lua On_close()")
 end
 
+-- Terminal:open does all the magic of opening terminal
 function Terminal:open()
     self:remember_cursor()
 
     local dim = self:win_dim()
-    local opts = self:win_opts(dim)
+    local opts = {
+        relative = 'editor',
+        style = 'minimal',
+        width = dim.width + 2,
+        height = dim.height + 2,
+        col = dim.col - 1,
+        row = dim.row - 1,
+    }
 
     local bg_buf = self:create_buf('bg', true, dim.height, dim.width)
-    local bg_win = self:create_win('bg', bg_buf, opts, true)
+    local bg_win = self:create_win(bg_buf, opts, true)
 
     opts.width = dim.width
     opts.height = dim.height
@@ -149,7 +164,7 @@ function Terminal:open()
     opts.row = dim.row
 
     local buf = self:create_buf('fg')
-    local win = self:create_win('fg', buf, opts)
+    local win = self:create_win(buf, opts)
 
     self:term()
 
@@ -158,8 +173,9 @@ function Terminal:open()
     self:store('fg', win, buf)
 end
 
+-- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
 function Terminal:close(force)
-    if not next(self.wins) then
+    if next(self.wins) == nil then
         do return end
     end
 
@@ -188,6 +204,7 @@ function Terminal:close(force)
     self:restore_cursor()
 end
 
+-- Terminal:toggle is used to toggle the terminal window
 function Terminal:toggle()
     if vim.tbl_isempty(self.wins) then
         self:open()

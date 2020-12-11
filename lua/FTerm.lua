@@ -4,12 +4,16 @@ local t = T:new()
 
 local M = {}
 
+function M.setup(opts)
+    t:setup(opts or {})
+end
+
 function M.open()
     t:open()
 end
 
 function M.close()
-    t:open()
+    t:close()
 end
 
 function M.toggle()
