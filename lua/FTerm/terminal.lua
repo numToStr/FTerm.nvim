@@ -45,15 +45,15 @@ end
 
 -- Terminal:remember_cursor stores the last cursor position and window
 function Terminal:remember_cursor()
-    self.last_win = fn.winnr()
-    self.last_pos = fn.getpos('.')
+    self.last_win = api.nvim_get_current_win()
+    self.last_pos = api.nvim_win_get_cursor(self.last_win)
 end
 
 -- Terminal:restore_cursor restores the cursor to the last remembered position
 function Terminal:restore_cursor()
     if self.last_win and next(self.last_pos) then
-        cmd(self.last_win.." wincmd w")
-        fn.setpos('.', self.last_pos)
+        api.nvim_set_current_win(self.last_win)
+        api.nvim_win_set_cursor(self.last_win, self.last_pos)
 
         self.last_win = nil
         self.last_pos = nil
@@ -114,7 +114,7 @@ function Terminal:create_win(buf, opts, do_hl)
     local win_handle = api.nvim_open_win(buf, true, opts)
 
     if do_hl then
-        fn.nvim_win_set_option(win_handle, 'winhl', 'Normal:Normal')
+        api.nvim_win_set_option(win_handle, 'winhl', 'Normal:Normal')
     end
 
     return win_handle
