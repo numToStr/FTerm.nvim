@@ -98,7 +98,7 @@ function Terminal:create_buf(name, do_border, height, width)
         -- ## Border start ##
         local border_lines = { '┌' .. string.rep('─', width) .. '┐' }
         for _ = 1, height do
-          table.insert(border_lines, '|' .. string.rep(' ', width) .. '|')
+          table.insert(border_lines, '│' .. string.rep(' ', width) .. '│')
         end
         table.insert(border_lines, '└' .. string.rep('─', width) .. '┘')
         -- ## Border end ##
