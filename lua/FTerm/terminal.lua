@@ -32,11 +32,6 @@ function Terminal:new()
     return setmetatable(x, self)
 end
 
--- Just to debug
-function Terminal:debug()
-    print(vim.inspect(self))
-end
-
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(c)
     if not c then
