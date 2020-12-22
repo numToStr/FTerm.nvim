@@ -16,6 +16,14 @@ function Terminal:new()
                 width = 0.8,
                 row = 0.5,
                 col = 0.5
+            },
+            border = {
+                horizontal = '─',
+                vertical = '|',
+                topLeft = '┌',
+                topRight = '┐',
+                bottomRight = '┘',
+                bottomLeft = '└'
             }
         }
     }
@@ -32,6 +40,7 @@ end
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(c)
     c.dimensions = vim.tbl_extend('keep', c.dimensions or {}, self.config.dimensions)
+    c.border = vim.tbl_extend('keep', c.border or {}, self.config.border)
 
     self.config = c
 end
@@ -96,13 +105,14 @@ function Terminal:create_buf(name, do_border, height, width)
 
     if do_border then
         -- ## Border start ##
-        local h_line = string.rep('─', width)
-        local border_lines = { '┌' .. h_line .. '┐' }
-        local v_border = '|' .. string.rep(' ', width) .. '|'
+        local b = self.config.border;
+        local h_line = string.rep(b.horizontal, width)
+        local border_lines = { b.topLeft .. h_line .. b.topRight }
+        local v_border = b.vertical .. string.rep(' ', width) .. b.vertical
         for _ = 1, height do
           table.insert(border_lines, v_border)
         end
-        table.insert(border_lines, '└' .. h_line .. '┘')
+        table.insert(border_lines, b.bottomLeft .. h_line .. b.bottomRight)
         -- ## Border end ##
 
         api.nvim_buf_set_lines(buf, 0, -1, false, border_lines)

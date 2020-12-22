@@ -48,14 +48,24 @@ use 'numtostr/FTerm.nvim'
 
 ```lua
 
--- Default dimensions in percentage, you can customize them individually and should be between 0 and 1
--- NOTE: No need to call .setup() if you don't want to customize
+-- NOTE: No need to call .setup() if you don't want to customize anything
 require'FTerm'.setup({
+    -- Default dimensions in percentage, you can customize them individually
+    -- Value should be between 0 and 1
     dimensions  = {
         height = 0.8,
         width = 0.8,
         row = 0.5,
         col = 0.5
+    }
+    -- Default border characters, you can customize them individually
+    border = {
+        horizontal = '─',
+        vertical = '|',
+        topLeft = '┌',
+        topRight = '┐',
+        bottomRight = '┘',
+        bottomLeft = '└'
     }
 })
 
