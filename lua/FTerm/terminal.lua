@@ -39,8 +39,14 @@ end
 
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(c)
-    c.dimensions = vim.tbl_extend('keep', c.dimensions or {}, self.config.dimensions)
-    c.border = vim.tbl_extend('keep', c.border or {}, self.config.border)
+    if not c then
+        do return end
+    end
+
+    local cfg = self.config
+
+    c.dimensions = c.dimensions and vim.tbl_extend('keep', c.dimensions, cfg.dimensions) or cfg.dimensions
+    c.border = c.border and vim.tbl_extend('keep', c.border, cfg.border) or cfg.border
 
     self.config = c
 end

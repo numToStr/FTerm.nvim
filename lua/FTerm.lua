@@ -5,7 +5,7 @@ local t = T:new()
 local M = {}
 
 function M.setup(opts)
-    t:setup(opts or {})
+    t:setup(opts)
 end
 
 function M.open()
