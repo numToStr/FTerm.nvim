@@ -96,11 +96,13 @@ function Terminal:create_buf(name, do_border, height, width)
 
     if do_border then
         -- ## Border start ##
-        local border_lines = { '┌' .. string.rep('─', width) .. '┐' }
+        local h_line = string.rep('─', width)
+        local border_lines = { '┌' .. h_line .. '┐' }
+        local v_border = '|' .. string.rep(' ', width) .. '|'
         for _ = 1, height do
-          table.insert(border_lines, '|' .. string.rep(' ', width) .. '|')
+          table.insert(border_lines, v_border)
         end
-        table.insert(border_lines, '└' .. string.rep('─', width) .. '┘')
+        table.insert(border_lines, '└' .. h_line .. '┘')
         -- ## Border end ##
 
         api.nvim_buf_set_lines(buf, 0, -1, false, border_lines)
