@@ -1,6 +1,6 @@
 local api = vim.api
 local fn = vim.fn
-local cmd = vim.cmd
+local cmd = api.nvim_command
 
 Terminal = {}
 
