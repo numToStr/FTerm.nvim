@@ -2,7 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
-Terminal = {}
+local Terminal = {}
 
 -- Init
 function Terminal:new()
@@ -224,4 +224,4 @@ function Terminal:toggle()
     end
 end
 
-return Terminal
+return Terminal:new()
