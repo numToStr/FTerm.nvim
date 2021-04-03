@@ -11,19 +11,19 @@ function Terminal:new()
         bufs = {},
         config = {
             -- Dimensions are treated as percentage
-            dimensions  = {
+            dimensions = {
                 height = 0.8,
                 width = 0.8,
                 row = 0.5,
                 col = 0.5
             },
             border = {
-                horizontal = '─',
-                vertical = '|',
-                topLeft = '┌',
-                topRight = '┐',
-                bottomRight = '┘',
-                bottomLeft = '└'
+                horizontal = "─",
+                vertical = "|",
+                topLeft = "┌",
+                topRight = "┐",
+                bottomRight = "┘",
+                bottomLeft = "└"
             }
         }
     }
@@ -35,13 +35,13 @@ end
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(c)
     if not c then
-        do return end
+        return
     end
 
     local cfg = self.config
 
-    c.dimensions = c.dimensions and vim.tbl_extend('keep', c.dimensions, cfg.dimensions) or cfg.dimensions
-    c.border = c.border and vim.tbl_extend('keep', c.border, cfg.border) or cfg.border
+    c.dimensions = c.dimensions and vim.tbl_extend("keep", c.dimensions, cfg.dimensions) or cfg.dimensions
+    c.border = c.border and vim.tbl_extend("keep", c.border, cfg.border) or cfg.border
 
     self.config = c
 end
@@ -51,7 +51,6 @@ function Terminal:store(name, win, buf)
     self.wins[name] = win
     self.bufs[name] = buf
 end
-
 
 -- Terminal:remember_cursor stores the last cursor position and window
 function Terminal:remember_cursor()
@@ -89,10 +88,9 @@ function Terminal:win_dim()
         width = width,
         height = height,
         col = col,
-        row = row,
+        row = row
     }
 end
-
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
 function Terminal:create_buf(name, do_border, height, width)
@@ -106,12 +104,12 @@ function Terminal:create_buf(name, do_border, height, width)
 
     if do_border then
         -- ## Border start ##
-        local b = self.config.border;
+        local b = self.config.border
         local h_line = string.rep(b.horizontal, width)
-        local border_lines = { b.topLeft .. h_line .. b.topRight }
-        local v_border = b.vertical .. string.rep(' ', width) .. b.vertical
+        local border_lines = {b.topLeft .. h_line .. b.topRight}
+        local v_border = b.vertical .. string.rep(" ", width) .. b.vertical
         for _ = 1, height do
-          table.insert(border_lines, v_border)
+            table.insert(border_lines, v_border)
         end
         table.insert(border_lines, b.bottomLeft .. h_line .. b.bottomRight)
         -- ## Border end ##
@@ -127,7 +125,7 @@ function Terminal:create_win(buf, opts, do_hl)
     local win_handle = api.nvim_open_win(buf, true, opts)
 
     if do_hl then
-        api.nvim_win_set_option(win_handle, 'winhl', 'Normal:Normal')
+        api.nvim_win_set_option(win_handle, "winhl", "Normal:Normal")
     end
 
     return win_handle
@@ -137,7 +135,7 @@ end
 function Terminal:term()
     if vim.tbl_isempty(self.bufs) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        local pid = fn.termopen(os.getenv('SHELL'))
+        local pid = fn.termopen(os.getenv("SHELL"))
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
@@ -146,7 +144,7 @@ function Terminal:term()
     cmd("startinsert")
 
     function On_close()
-       self:close(true)
+        self:close(true)
     end
 
     -- This fires when someone executes `exit` inside term
@@ -160,15 +158,15 @@ function Terminal:open()
 
     local dim = self:win_dim()
     local opts = {
-        relative = 'editor',
-        style = 'minimal',
+        relative = "editor",
+        style = "minimal",
         width = dim.width + 2,
         height = dim.height + 2,
         col = dim.col - 1,
-        row = dim.row - 1,
+        row = dim.row - 1
     }
 
-    local bg_buf = self:create_buf('bg', true, dim.height, dim.width)
+    local bg_buf = self:create_buf("bg", true, dim.height, dim.width)
     local bg_win = self:create_win(bg_buf, opts, true)
 
     opts.width = dim.width
@@ -176,20 +174,20 @@ function Terminal:open()
     opts.col = dim.col
     opts.row = dim.row
 
-    local buf = self:create_buf('fg')
+    local buf = self:create_buf("fg")
     local win = self:create_win(buf, opts)
 
     self:term()
 
     -- Need to store the handles after opening the terminal
-    self:store('bg', bg_win, bg_buf)
-    self:store('fg', win, buf)
+    self:store("bg", bg_win, bg_buf)
+    self:store("fg", win, buf)
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
 function Terminal:close(force)
     if next(self.wins) == nil then
-        do return end
+        return
     end
 
     for _, win in pairs(self.wins) do
@@ -204,7 +202,7 @@ function Terminal:close(force)
         for _, buf in pairs(self.bufs) do
             if api.nvim_buf_is_loaded(buf) then
                 -- api.nvim_buf_delete(buf, {})
-                cmd(buf..'bd!')
+                cmd(buf .. "bd!")
             end
         end
 
