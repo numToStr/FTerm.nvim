@@ -4,28 +4,24 @@ local cmd = api.nvim_command
 
 local Terminal = {}
 
+local defaults = {
+    -- Neovim's native `nvim_open_win` border config
+    border = "single",
+    -- Dimensions are treated as percentage
+    dimensions = {
+        height = 0.8,
+        width = 0.8,
+        row = 0.5,
+        col = 0.5
+    }
+}
+
 -- Init
 function Terminal:new()
     local x = {
         wins = {},
         bufs = {},
-        config = {
-            -- Dimensions are treated as percentage
-            dimensions = {
-                height = 0.8,
-                width = 0.8,
-                row = 0.5,
-                col = 0.5
-            },
-            border = {
-                horizontal = "─",
-                vertical = "|",
-                topLeft = "┌",
-                topRight = "┐",
-                bottomRight = "┘",
-                bottomLeft = "└"
-            }
-        }
+        config = defaults
     }
 
     self.__index = self
@@ -41,7 +37,7 @@ function Terminal:setup(c)
     local cfg = self.config
 
     c.dimensions = c.dimensions and vim.tbl_extend("keep", c.dimensions, cfg.dimensions) or cfg.dimensions
-    c.border = c.border and vim.tbl_extend("keep", c.border, cfg.border) or cfg.border
+    c.border = c.border or cfg.border
 
     self.config = c
 end
@@ -93,40 +89,22 @@ function Terminal:win_dim()
 end
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
-function Terminal:create_buf(name, do_border, height, width)
+function Terminal:create_buf(name)
     -- If previous buffer exists then return it
     local prev = self.bufs[name]
+
     if prev and api.nvim_buf_is_loaded(prev) then
         return prev
     end
 
-    local buf = api.nvim_create_buf(false, true)
-
-    if do_border then
-        -- ## Border start ##
-        local b = self.config.border
-        local h_line = string.rep(b.horizontal, width)
-        local border_lines = {b.topLeft .. h_line .. b.topRight}
-        local v_border = b.vertical .. string.rep(" ", width) .. b.vertical
-        for _ = 1, height do
-            table.insert(border_lines, v_border)
-        end
-        table.insert(border_lines, b.bottomLeft .. h_line .. b.bottomRight)
-        -- ## Border end ##
-
-        api.nvim_buf_set_lines(buf, 0, -1, false, border_lines)
-    end
-
-    return buf
+    return api.nvim_create_buf(false, true)
 end
 
 -- Terminal:create_win creates a new window with a given buffer
-function Terminal:create_win(buf, opts, do_hl)
+function Terminal:create_win(buf, opts)
     local win_handle = api.nvim_open_win(buf, true, opts)
 
-    if do_hl then
-        api.nvim_win_set_option(win_handle, "winhl", "Normal:Normal")
-    end
+    api.nvim_win_set_option(win_handle, "winhl", "Normal:Normal")
 
     return win_handle
 end
@@ -156,32 +134,28 @@ end
 function Terminal:open()
     self:remember_cursor()
 
+    local key = "default"
     local dim = self:win_dim()
-    local opts = {
-        relative = "editor",
-        style = "minimal",
-        width = dim.width + 2,
-        height = dim.height + 2,
-        col = dim.col - 1,
-        row = dim.row - 1
-    }
 
-    local bg_buf = self:create_buf("bg", true, dim.height, dim.width)
-    local bg_win = self:create_win(bg_buf, opts, true)
-
-    opts.width = dim.width
-    opts.height = dim.height
-    opts.col = dim.col
-    opts.row = dim.row
-
-    local buf = self:create_buf("fg")
-    local win = self:create_win(buf, opts)
+    local buf = self:create_buf(key)
+    local win =
+        self:create_win(
+        buf,
+        {
+            border = self.config.border,
+            relative = "editor",
+            style = "minimal",
+            width = dim.width,
+            height = dim.height,
+            col = dim.col,
+            row = dim.row
+        }
+    )
 
     self:term()
 
     -- Need to store the handles after opening the terminal
-    self:store("bg", bg_win, bg_buf)
-    self:store("fg", win, buf)
+    self:store(key, win, buf)
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
