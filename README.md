@@ -6,7 +6,7 @@
 
 ### Requirements
 
--   Neovim Nightly
+-   Neovim Nightly (0.5)
 
 ### Install
 
@@ -58,15 +58,9 @@ require'FTerm'.setup({
         row = 0.5,
         col = 0.5
     }
-    -- Default border characters, you can customize them individually
-    border = {
-        horizontal = '─',
-        vertical = '|',
-        topLeft = '┌',
-        topRight = '┐',
-        bottomRight = '┘',
-        bottomLeft = '└'
-    }
+    -- Neovim's native `nvim_open_win` border config
+    -- :h nvim_open_win
+    border = 'single' -- or { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }
 })
 
 -- Keybinding
