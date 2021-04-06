@@ -121,13 +121,13 @@ function Terminal:term()
 
     cmd("startinsert")
 
-    function On_close()
+    function _G.__fterm_close()
         self:close(true)
     end
 
     -- This fires when someone executes `exit` inside term
     -- So, in this case the buffer should also be removed instead of reusing
-    cmd("autocmd! TermClose <buffer> lua On_close()")
+    cmd("autocmd! TermClose <buffer> lua __fterm_close()")
 end
 
 -- Terminal:open does all the magic of opening terminal
