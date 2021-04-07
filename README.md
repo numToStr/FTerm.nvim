@@ -12,21 +12,28 @@
 
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
-```vim
-use 'numtostr/FTerm.nvim'
+```lua
+use {
+    "numtostr/FTerm.nvim",
+    config = function()
+        require("FTerm").setup()
+    end
+}
 ```
 
 -   With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'numtostr/FTerm.nvim'
+
+" Somewhere after plug#end()
+
+lua require('FTerm').setup()
 ```
 
-### Configuration (optional)
+### Configuration
 
 Options can be provided when calling `setup()`.
-
-> NOTE: No need to call .setup() if you don't want to customize anything
 
 -   `dimensions`: Object containing the terminal window dimensions.
 

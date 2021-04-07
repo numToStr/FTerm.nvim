@@ -1,27 +1,15 @@
+local U = require("FTerm.utils")
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
 local Terminal = {}
 
-local defaults = {
-    -- Neovim's native `nvim_open_win` border config
-    border = "single",
-    -- Dimensions are treated as percentage
-    dimensions = {
-        height = 0.8,
-        width = 0.8,
-        row = 0.5,
-        col = 0.5
-    }
-}
-
 -- Init
 function Terminal:new()
     local x = {
         wins = {},
-        bufs = {},
-        config = defaults
+        bufs = {}
     }
 
     self.__index = self
@@ -29,17 +17,8 @@ function Terminal:new()
 end
 
 -- Terminal:setup takes windows configuration ie. dimensions
-function Terminal:setup(c)
-    if not c then
-        return
-    end
-
-    local cfg = self.config
-
-    c.dimensions = c.dimensions and vim.tbl_extend("keep", c.dimensions, cfg.dimensions) or cfg.dimensions
-    c.border = c.border or cfg.border
-
-    self.config = c
+function Terminal:setup(opts)
+    self.config = U.build_config(opts)
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
