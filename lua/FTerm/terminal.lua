@@ -92,7 +92,7 @@ end
 function Terminal:term()
     if vim.tbl_isempty(self.bufs) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        local pid = fn.termopen(os.getenv("SHELL"))
+        local pid = fn.termopen(self.config.cmd)
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
