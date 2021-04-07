@@ -73,3 +73,7 @@ local opts = { noremap = true, silent = true }
 map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
 map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
 ```
+
+### Credits
+
+[vim-floaterm](https://github.com/voldikss/vim-floaterm) for the inspiration
