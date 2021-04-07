@@ -24,7 +24,7 @@ Plug 'numtostr/FTerm.nvim'
 
 ### Configuration (optional)
 
-Configuation can be provided when calling `setup()`.
+Options can be provided when calling `setup()`.
 
 > NOTE: No need to call .setup() if you don't want to customize anything
 
