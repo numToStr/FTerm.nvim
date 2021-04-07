@@ -4,7 +4,6 @@
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
 
-
 ### Requirements
 
 -   Neovim Nightly (0.5)
@@ -40,7 +39,7 @@ Configuation can be provided when calling `setup()`.
 
 -   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
 
-### Commands
+### Functions
 
 -   `require('FTerm').setup()` - To configure the terminal window.
 
