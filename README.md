@@ -10,67 +10,66 @@
 
 ### Install
 
--   With [vim-plug](https://github.com/junegunn/vim-plug)
-
-```vim
-Plug 'numtostr/FTerm.nvim'
-```
-
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```vim
 use 'numtostr/FTerm.nvim'
 ```
 
+-   With [vim-plug](https://github.com/junegunn/vim-plug)
+
+```vim
+Plug 'numtostr/FTerm.nvim'
+```
+
+### Configuration (optional)
+
+Configuation can be provided when calling `setup()`.
+
+> NOTE: No need to call .setup() if you don't want to customize anything
+
+-   `dimensions`: Object containing the terminal window dimensions.
+
+    Fields: (Values should be between 0 and 1)
+
+    -   `height` - Height of the terminal window (default: `0.8`)
+    -   `width` - Width of the terminal window (default: `0.8`)
+    -   `col` - X axis of the terminal window (default: `0.5`)
+    -   `row` - Y axis of the terminal window (default: `0.5`)
+
+-   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
+
 ### Commands
 
--   To open the terminal
+-   `require('FTerm').setup()` - To configure the terminal window.
 
-```
-:FTermOpen
-```
+-   `require('FTerm').open()` - To open the terminal
 
--   To close the terminal
+-   `require('FTerm').close()` - To close the terminal
 
-```
-:FTermClose
-```
+    > Actually this closes the floating window not the actual terminal buffer
 
-> Actually this closes the floating window not the actual terminal buffer
-
--   To toggle the terminal
-
-```
-:FTermToggle
-```
+-   `require('FTerm').toggle()` - To toggle the terminal
 
 ### Setup
 
 ```lua
 
--- NOTE: No need to call .setup() if you don't want to customize anything
 require'FTerm'.setup({
-    -- Default dimensions in percentage, you can customize them individually
-    -- Value should be between 0 and 1
     dimensions  = {
         height = 0.8,
         width = 0.8,
         row = 0.5,
         col = 0.5
-    }
-    -- Neovim's native `nvim_open_win` border config
-    -- :h nvim_open_win
-    border = 'single' -- or { "╔", "═" ,"╗", "║", "╝", "═", "╚", "║" }
+    },
+    border = 'single' -- or 'double'
 })
 
 -- Keybinding
+local map = vim.api.nvim_set_keymap
+local opts = { noremap = true, silent = true }
 
 -- Closer to the metal
-vim.fn.nvim_set_keymap('n', '<A-i>', '<CMD>lua require"FTerm".toggle()<CR>', { noremap = true, silent = true })
-vim.fn.nvim_set_keymap('t', '<A-i>', '<C-\\><C-n><CMD>lua require"FTerm".toggle()<CR>', { noremap = true, silent = true })
-
--- or
-
-vim.fn.nvim_set_keymap('n', '<A-i>', ':FTermToggle<CR>', { noremap = true, silent = true })
-vim.fn.nvim_set_keymap('t', '<A-i>', '<C-\\><C-n>:FTermToggle<CR>', { noremap = true, silent = true })
+map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
+map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
 ```
