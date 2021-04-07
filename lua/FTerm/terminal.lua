@@ -198,4 +198,4 @@ function Terminal:toggle()
     end
 end
 
-return Terminal:new()
+return Terminal

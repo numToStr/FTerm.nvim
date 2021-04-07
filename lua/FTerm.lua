@@ -1,4 +1,4 @@
-local t = require("FTerm.terminal")
+local t = require("FTerm.terminal"):new()
 
 local M = {}
 
