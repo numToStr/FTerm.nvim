@@ -154,8 +154,7 @@ function Terminal:close(force)
     if force then
         for _, buf in pairs(self.bufs) do
             if api.nvim_buf_is_loaded(buf) then
-                -- api.nvim_buf_delete(buf, {})
-                cmd(buf .. "bd!")
+                api.nvim_buf_delete(buf, {force = true})
             end
         end
 
