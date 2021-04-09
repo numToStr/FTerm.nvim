@@ -65,8 +65,8 @@ function Terminal:win_dim()
     local height = math.ceil(ln * d.height - 4)
 
     -- and its starting position
-    local col = math.ceil((cl - width) * d.col)
-    local row = math.ceil((ln - height) * d.row - 1)
+    local col = math.ceil((cl - width) * d.x)
+    local row = math.ceil((ln - height) * d.y - 1)
 
     self.dims = {
         width = width,

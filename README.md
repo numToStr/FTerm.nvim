@@ -57,8 +57,8 @@ Options can be provided when calling `setup()`.
 
     -   `height` - Height of the terminal window (default: `0.8`)
     -   `width` - Width of the terminal window (default: `0.8`)
-    -   `col` - X axis of the terminal window (default: `0.5`)
-    -   `row` - Y axis of the terminal window (default: `0.5`)
+    -   `x` - X axis of the terminal window (default: `0.5`)
+    -   `y` - Y axis of the terminal window (default: `0.5`)
 
 -   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
 
@@ -70,8 +70,8 @@ require'FTerm'.setup({
     dimensions  = {
         height = 0.8,
         width = 0.8,
-        row = 0.5,
-        col = 0.5
+        x = 0.5,
+        y = 0.5
     },
     border = 'single' -- or 'double'
 })
