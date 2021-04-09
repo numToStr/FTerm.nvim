@@ -1,6 +1,6 @@
 <h1 align='center'>FTerm.nvim</h1>
 
-<h4 align='center'>No nonsense floating terminal written in lua.</h4>
+<h4 align='center'>🔥 No nonsense floating terminal written in lua 🔥</h4>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
 
@@ -12,32 +12,24 @@
 
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
-```vim
-use 'numtostr/FTerm.nvim'
+```lua
+use {
+    "numtostr/FTerm.nvim",
+    config = function()
+        require("FTerm").setup()
+    end
+}
 ```
 
 -   With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'numtostr/FTerm.nvim'
+
+" Somewhere after plug#end()
+
+lua require('FTerm').setup()
 ```
-
-### Configuration (optional)
-
-Options can be provided when calling `setup()`.
-
-> NOTE: No need to call .setup() if you don't want to customize anything
-
--   `dimensions`: Object containing the terminal window dimensions.
-
-    Fields: (Values should be between 0 and 1)
-
-    -   `height` - Height of the terminal window (default: `0.8`)
-    -   `width` - Width of the terminal window (default: `0.8`)
-    -   `col` - X axis of the terminal window (default: `0.5`)
-    -   `row` - Y axis of the terminal window (default: `0.5`)
-
--   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
 
 ### Functions
 
@@ -50,6 +42,25 @@ Options can be provided when calling `setup()`.
     > Actually this closes the floating window not the actual terminal buffer
 
 -   `require('FTerm').toggle()` - To toggle the terminal
+
+### Configuration
+
+Options can be provided when calling `setup()`.
+
+-   `cmd`: Command to run inside the terminal. (default: `os.getenv('SHELL')`)
+
+> NOTE: This is not intended for edit in the default terminal. See [custom terminal](#custom-terminal) section.
+
+-   `dimensions`: Object containing the terminal window dimensions.
+
+    Fields: (Values should be between `0` and `1`)
+
+    -   `height` - Height of the terminal window (default: `0.8`)
+    -   `width` - Width of the terminal window (default: `0.8`)
+    -   `col` - X axis of the terminal window (default: `0.5`)
+    -   `row` - Y axis of the terminal window (default: `0.5`)
+
+-   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
 
 ### Setup
 
@@ -72,6 +83,48 @@ local opts = { noremap = true, silent = true }
 -- Closer to the metal
 map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
 map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
+```
+
+### Custom Terminal
+
+By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the underlying terminal function and overriding the default command.
+
+Below are some examples:
+
+-   Running [gitui](https://github.com/extrawurst/gitui)
+
+```lua
+local term = require("FTerm.terminal")
+
+local gitui = term:new()
+
+gitui:setup({
+    cmd = "gitui",
+    dimensions = {
+        height = 0.9,
+        width = 0.9
+    }
+})
+
+function _G.__fterm_gitui() -- Use this to toggle gitui in a floating terminal
+    gitui:toggle()
+end
+```
+
+-   Running [bpytop](https://github.com/aristocratos/bpytop)
+
+```lua
+local term = require("FTerm.terminal")
+
+local top = term:new()
+
+top:setup({
+    cmd = "bpytop"
+})
+
+function _G.__fterm_top() -- Use this to toggle bpytop in a floating terminal
+    top:toggle()
+end
 ```
 
 ### Credits

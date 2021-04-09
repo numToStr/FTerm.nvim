@@ -1,51 +1,31 @@
+local U = require("FTerm.config")
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
 local Terminal = {}
 
-local defaults = {
-    -- Neovim's native `nvim_open_win` border config
-    border = "single",
-    -- Dimensions are treated as percentage
-    dimensions = {
-        height = 0.8,
-        width = 0.8,
-        row = 0.5,
-        col = 0.5
-    }
-}
-
 -- Init
 function Terminal:new()
-    local x = {
-        wins = {},
-        bufs = {},
-        config = defaults
+    local state = {
+        win = nil,
+        buf = nil,
+        terminal = nil
     }
 
     self.__index = self
-    return setmetatable(x, self)
+    return setmetatable(state, self)
 end
 
 -- Terminal:setup takes windows configuration ie. dimensions
-function Terminal:setup(c)
-    if not c then
-        return
-    end
-
-    local cfg = self.config
-
-    c.dimensions = c.dimensions and vim.tbl_extend("keep", c.dimensions, cfg.dimensions) or cfg.dimensions
-    c.border = c.border or cfg.border
-
-    self.config = c
+function Terminal:setup(opts)
+    self.config = U.create_config(opts)
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
-function Terminal:store(name, win, buf)
-    self.wins[name] = win
-    self.bufs[name] = buf
+function Terminal:store(win, buf)
+    self.win = win
+    self.buf = buf
 end
 
 -- Terminal:remember_cursor stores the last cursor position and window
@@ -56,7 +36,7 @@ end
 
 -- Terminal:restore_cursor restores the cursor to the last remembered position
 function Terminal:restore_cursor()
-    if self.last_win and next(self.last_pos) then
+    if self.last_win and self.last_pos ~= nil then
         api.nvim_set_current_win(self.last_win)
         api.nvim_win_set_cursor(self.last_win, self.last_pos)
 
@@ -89,9 +69,9 @@ function Terminal:win_dim()
 end
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
-function Terminal:create_buf(name)
+function Terminal:create_buf()
     -- If previous buffer exists then return it
-    local prev = self.bufs[name]
+    local prev = self.buf
 
     if prev and api.nvim_buf_is_loaded(prev) then
         return prev
@@ -111,9 +91,9 @@ end
 
 -- Terminal:term opens a terminal inside a buffer
 function Terminal:term()
-    if vim.tbl_isempty(self.bufs) then
+    if not self.buf then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        local pid = fn.termopen(os.getenv("SHELL"))
+        local pid = fn.termopen(self.config.cmd)
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
@@ -134,10 +114,10 @@ end
 function Terminal:open()
     self:remember_cursor()
 
-    local key = "default"
     local dim = self:win_dim()
 
-    local buf = self:create_buf(key)
+    local buf = self:create_buf()
+
     local win =
         self:create_win(
         buf,
@@ -155,34 +135,29 @@ function Terminal:open()
     self:term()
 
     -- Need to store the handles after opening the terminal
-    self:store(key, win, buf)
+    self:store(win, buf)
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
 function Terminal:close(force)
-    if next(self.wins) == nil then
+    if not self.win then
         return
     end
 
-    for _, win in pairs(self.wins) do
-        if api.nvim_win_is_valid(win) then
-            api.nvim_win_close(win, {})
-        end
+    if api.nvim_win_is_valid(self.win) then
+        api.nvim_win_close(self.win, {})
     end
 
-    self.wins = {}
+    self.win = nil
 
     if force then
-        for _, buf in pairs(self.bufs) do
-            if api.nvim_buf_is_loaded(buf) then
-                -- api.nvim_buf_delete(buf, {})
-                cmd(buf .. "bd!")
-            end
+        if api.nvim_buf_is_loaded(self.buf) then
+            api.nvim_buf_delete(self.buf, {force = true})
         end
 
         fn.jobstop(self.terminal)
 
-        self.bufs = {}
+        self.buf = nil
         self.terminal = nil
     end
 
@@ -191,11 +166,12 @@ end
 
 -- Terminal:toggle is used to toggle the terminal window
 function Terminal:toggle()
-    if vim.tbl_isempty(self.wins) then
+    -- If window is stored then it is already opened
+    if not self.win then
         self:open()
     else
         self:close()
     end
 end
 
-return Terminal:new()
+return Terminal
