@@ -1,6 +1,6 @@
 <h1 align='center'>FTerm.nvim</h1>
 
-<h4 align='center'>No nonsense floating terminal written in lua.</h4>
+<h4 align='center'>🚀 No nonsense floating terminal written in lua 🚀</h4>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
 
@@ -91,7 +91,7 @@ By default `FTerm` only creates and manage one terminal instance but you can cre
 
 Below are some examples:
 
--   Opening [gitui](https://github.com/extrawurst/gitui)
+-   Running [gitui](https://github.com/extrawurst/gitui)
 
 ```lua
 local term = require("FTerm.terminal")
@@ -122,7 +122,7 @@ top:setup({
     cmd = "bpytop"
 })
 
-function _G.__fterm_bashtop() -- Use this to toggle bpytop in a floating terminal
+function _G.__fterm_top() -- Use this to toggle bpytop in a floating terminal
     top:toggle()
 end
 ```
