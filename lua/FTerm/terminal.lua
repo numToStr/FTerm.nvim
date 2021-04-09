@@ -1,4 +1,4 @@
-local U = require("FTerm.utils")
+local U = require("FTerm.config")
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
@@ -19,7 +19,7 @@ end
 
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(opts)
-    self.config = U.build_config(opts)
+    self.config = U.create_config(opts)
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list

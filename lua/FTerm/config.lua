@@ -14,7 +14,7 @@ local O = {
     }
 }
 
-function U.build_config(opts)
+function U.create_config(opts)
     if not opts then
         return O
     end
