@@ -20,6 +20,14 @@ end
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(opts)
     self.config = U.create_config(opts)
+
+    self:win_dim()
+
+    function _G.__fterm_win_dim()
+        self:win_dim()
+    end
+
+    cmd("autocmd! VimResized * lua __fterm_win_dim()")
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
@@ -60,7 +68,7 @@ function Terminal:win_dim()
     local col = math.ceil((cl - width) * d.col)
     local row = math.ceil((ln - height) * d.row - 1)
 
-    return {
+    self.dims = {
         width = width,
         height = height,
         col = col,
@@ -114,7 +122,7 @@ end
 function Terminal:open()
     self:remember_cursor()
 
-    local dim = self:win_dim()
+    local dim = self.dims
 
     local buf = self:create_buf()
 
