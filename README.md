@@ -119,7 +119,7 @@ local term = require("FTerm.terminal")
 local top = term:new()
 
 top:setup({
-    cmd = "bashtop"
+    cmd = "bpytop"
 })
 
 function _G.__fterm_bashtop() -- Use this to toggle bpytop in a floating terminal
