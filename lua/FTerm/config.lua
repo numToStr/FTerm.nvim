@@ -9,8 +9,8 @@ local O = {
     dimensions = {
         height = 0.8,
         width = 0.8,
-        row = 0.5,
-        col = 0.5
+        x = 0.5,
+        y = 0.5
     }
 }
 
