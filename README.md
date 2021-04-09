@@ -91,7 +91,7 @@ By default `FTerm` only creates and manage one terminal instance but you can cre
 
 Below are some examples:
 
--   Opening `[gitui](https://github.com/extrawurst/gitui)`
+-   Opening [gitui](https://github.com/extrawurst/gitui)
 
 ```lua
 local term = require("FTerm.terminal")
@@ -111,7 +111,7 @@ function _G.__fterm_gitui() -- Use this to toggle gitui in a floating terminal
 end
 ```
 
--   Running `[bpytop](https://github.com/aristocratos/bpytop)`
+-   Running [bpytop](https://github.com/aristocratos/bpytop)
 
 ```lua
 local term = require("FTerm.terminal")
