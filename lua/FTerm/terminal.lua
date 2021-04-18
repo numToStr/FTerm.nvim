@@ -93,6 +93,9 @@ function Terminal:create_win(buf, opts)
     local win_handle = api.nvim_open_win(buf, true, opts)
 
     api.nvim_win_set_option(win_handle, "winhl", "Normal:Normal")
+    if fn.exists('#User#FTermOpen') then
+      cmd("doautocmd <nomodeline> User FTermOpen")
+    end
 
     return win_handle
 end
