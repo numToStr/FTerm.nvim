@@ -26,4 +26,13 @@ function U.create_config(opts)
     }
 end
 
+function U.to_hex(str)
+    return str:gsub(
+        ".",
+        function(c)
+            return string.format("%02X", string.byte(c))
+        end
+    )
+end
+
 return U
