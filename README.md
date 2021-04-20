@@ -60,7 +60,7 @@ Options can be provided when calling `setup()`.
     -   `x` - X axis of the terminal window (default: `0.5`)
     -   `y` - Y axis of the terminal window (default: `0.5`)
 
--   `border`: Native window border. See `:h nvim_open_win` for more configuration options.
+-   `border`: Native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
 
 ### Setup
 
@@ -104,10 +104,14 @@ local gitui = term:new():setup({
     }
 })
 
-function _G.__fterm_gitui() -- Use this to toggle gitui in a floating terminal
+ -- Use this to toggle gitui in a floating terminal
+function _G.__fterm_gitui()
     gitui:toggle()
 end
 ```
+
+Screenshot
+![gitui](https://user-images.githubusercontent.com/24727447/115375538-8541ca80-a1eb-11eb-90aa-b81803e591dc.png "gitui in a floating terminal")
 
 -   Running [bpytop](https://github.com/aristocratos/bpytop)
 
@@ -118,10 +122,14 @@ local top = term:new():setup({
     cmd = "bpytop"
 })
 
-function _G.__fterm_top() -- Use this to toggle bpytop in a floating terminal
+ -- Use this to toggle bpytop in a floating terminal
+function _G.__fterm_top()
     top:toggle()
 end
 ```
+
+Screenshot
+![bpytop](https://user-images.githubusercontent.com/24727447/115376384-47917180-a1ec-11eb-9717-8dbf21465428.png "bpytop in floating terminal")
 
 ### Credits
 
