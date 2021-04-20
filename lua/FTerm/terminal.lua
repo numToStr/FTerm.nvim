@@ -91,16 +91,31 @@ function Terminal:create_buf()
 end
 
 -- Terminal:create_win creates a new window with a given buffer
-function Terminal:create_win(buf, opts)
-    local win_handle = api.nvim_open_win(buf, true, opts)
+function Terminal:create_win(buf)
+    local dim = self.dims
 
-    api.nvim_win_set_option(win_handle, "winhl", "Normal:Normal")
+    local win =
+        api.nvim_open_win(
+        buf,
+        true,
+        {
+            border = self.config.border,
+            relative = "editor",
+            style = "minimal",
+            width = dim.width,
+            height = dim.height,
+            col = dim.col,
+            row = dim.row
+        }
+    )
+
+    api.nvim_win_set_option(win, "winhl", "Normal:Normal")
 
     -- Setting filetype in `create_win()` instead of `create_buf()` because window options
     -- such as `winhl`, `winblend` should be available after the window is created.
     api.nvim_buf_set_option(buf, "filetype", "FTerm")
 
-    return win_handle
+    return win
 end
 
 -- Terminal:term opens a terminal inside a buffer
@@ -128,23 +143,9 @@ end
 function Terminal:open()
     self:remember_cursor()
 
-    local dim = self.dims
-
     local buf = self:create_buf()
 
-    local win =
-        self:create_win(
-        buf,
-        {
-            border = self.config.border,
-            relative = "editor",
-            style = "minimal",
-            width = dim.width,
-            height = dim.height,
-            col = dim.col,
-            row = dim.row
-        }
-    )
+    local win = self:create_win(buf)
 
     self:term()
 
