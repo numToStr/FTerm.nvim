@@ -96,9 +96,7 @@ Below are some examples:
 ```lua
 local term = require("FTerm.terminal")
 
-local gitui = term:new()
-
-gitui:setup({
+local gitui = term:new():setup({
     cmd = "gitui",
     dimensions = {
         height = 0.9,
@@ -116,9 +114,7 @@ end
 ```lua
 local term = require("FTerm.terminal")
 
-local top = term:new()
-
-top:setup({
+local top = term:new():setup({
     cmd = "bpytop"
 })
 
