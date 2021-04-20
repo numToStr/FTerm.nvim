@@ -28,6 +28,8 @@ function Terminal:setup(opts)
     end
 
     cmd("autocmd! VimResized * lua __fterm_win_dim()")
+
+    return self
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
