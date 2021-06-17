@@ -1,6 +1,6 @@
 <h1 align='center'>FTerm.nvim</h1>
 
-<h4 align='center'>🔥 No-nonsense floating terminal plugin for neovim written in lua 🔥</h4>
+<h4 align='center'>🔥 No-nonsense floating terminal plugin for neovim 🔥</h4>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
 
