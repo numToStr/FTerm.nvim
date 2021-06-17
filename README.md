@@ -1,6 +1,6 @@
 <h1 align='center'>FTerm.nvim</h1>
 
-<h4 align='center'>🔥 No nonsense floating terminal written in lua 🔥</h4>
+<h4 align='center'>🔥 No-nonsense floating terminal plugin for neovim written in lua 🔥</h4>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
 
@@ -49,18 +49,18 @@ Options can be provided when calling `setup()`.
 
 -   `cmd`: Command to run inside the terminal. (default: `os.getenv('SHELL')`)
 
-> NOTE: This is not intended for edit in the default terminal. See [custom terminal](#custom-terminal) section.
+> NOTE: This is not meant for edit in the default terminal. See [custom terminal](#custom-terminal) section for use case.
 
 -   `dimensions`: Object containing the terminal window dimensions.
 
-    Fields: (Values should be between `0` and `1`)
+    The value for each field should be between `0` and `1`
 
     -   `height` - Height of the terminal window (default: `0.8`)
     -   `width` - Width of the terminal window (default: `0.8`)
     -   `x` - X axis of the terminal window (default: `0.5`)
     -   `y` - Y axis of the terminal window (default: `0.5`)
 
--   `border`: Native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
+-   `border`: Neovim's native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
 
 ### Setup
 
@@ -110,6 +110,7 @@ end
 ```
 
 Screenshot
+
 ![gitui](https://user-images.githubusercontent.com/24727447/115375538-8541ca80-a1eb-11eb-90aa-b81803e591dc.png "gitui in a floating terminal")
 
 -   Running [bpytop](https://github.com/aristocratos/bpytop)
@@ -128,6 +129,7 @@ end
 ```
 
 Screenshot
+
 ![bpytop](https://user-images.githubusercontent.com/24727447/115376384-47917180-a1ec-11eb-9717-8dbf21465428.png "bpytop in floating terminal")
 
 ### Credits
