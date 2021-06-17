@@ -10,7 +10,7 @@ local Terminal = {
 
 -- Init
 function Terminal:new()
-    local state = {
+	local state = {
         win = nil,
         buf = nil,
         terminal = nil
@@ -151,6 +151,24 @@ function Terminal:term()
     cmd("startinsert")
 end
 
+function Terminal:term_empty()
+    if not self.buf then
+
+        -- Need to setup different TermClose autocmd for different terminal instances
+        -- Otherwise this will be overriden by other terminal aka custom terminal
+        Terminal.au_close[self.au_key] = function()
+            self:close(true)
+        end
+
+        -- This fires when someone executes `exit` inside term
+        -- So, in this case the buffer should also be removed instead of reusing
+        cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
+    end
+
+    cmd("startinsert")
+end
+
+
 -- Terminal:open does all the magic of opening terminal
 function Terminal:open()
     self:remember_cursor()
@@ -163,6 +181,20 @@ function Terminal:open()
 
     -- Need to store the handles after opening the terminal
     self:store(win, buf)
+end
+
+function Terminal:open_empty()
+	self:remember_cursor()
+
+    local buf = self:create_buf()
+
+    local win = self:create_win(buf)
+
+    self:term_empty()
+
+    -- Need to store the handles after opening the terminal
+    self:store(win, buf)
+
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows

@@ -10,6 +10,10 @@ function M.open()
     t:open()
 end
 
+function M.open_empty()
+	t:open_empty()
+end
+
 function M.close()
     t:close()
 end
