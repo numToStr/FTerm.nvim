@@ -6,7 +6,7 @@
 
 ### Requirements
 
--   Neovim Nightly (0.5)
+-   Neovim 0.5
 
 ### Install
 
