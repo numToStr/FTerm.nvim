@@ -1,11 +1,11 @@
-local U = require("FTerm.config")
+local U = require('FTerm.config')
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
 local Terminal = {
     au_close = {},
-    au_resize = {}
+    au_resize = {},
 }
 
 -- Init
@@ -13,7 +13,7 @@ function Terminal:new()
     local state = {
         win = nil,
         buf = nil,
-        terminal = nil
+        terminal = nil,
     }
 
     self.__index = self
@@ -84,7 +84,7 @@ function Terminal:win_dim()
         width = width,
         height = height,
         col = col,
-        row = row
+        row = row,
     }
 end
 
@@ -104,26 +104,21 @@ end
 function Terminal:create_win(buf)
     local dim = self.dims
 
-    local win =
-        api.nvim_open_win(
-        buf,
-        true,
-        {
-            border = self.config.border,
-            relative = "editor",
-            style = "minimal",
-            width = dim.width,
-            height = dim.height,
-            col = dim.col,
-            row = dim.row
-        }
-    )
+    local win = api.nvim_open_win(buf, true, {
+        border = self.config.border,
+        relative = 'editor',
+        style = 'minimal',
+        width = dim.width,
+        height = dim.height,
+        col = dim.col,
+        row = dim.row,
+    })
 
-    api.nvim_win_set_option(win, "winhl", "Normal:Normal")
+    api.nvim_win_set_option(win, 'winhl', 'Normal:Normal')
 
     -- Setting filetype in `create_win()` instead of `create_buf()` because window options
     -- such as `winhl`, `winblend` should be available after the window is created.
-    api.nvim_buf_set_option(buf, "filetype", "FTerm")
+    api.nvim_buf_set_option(buf, 'filetype', 'FTerm')
 
     return win
 end
@@ -148,7 +143,7 @@ function Terminal:term()
         cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
     end
 
-    cmd("startinsert")
+    cmd('startinsert')
 end
 
 -- Terminal:open does all the magic of opening terminal
@@ -179,7 +174,7 @@ function Terminal:close(force)
 
     if force then
         if api.nvim_buf_is_loaded(self.buf) then
-            api.nvim_buf_delete(self.buf, {force = true})
+            api.nvim_buf_delete(self.buf, { force = true })
         end
 
         fn.jobstop(self.terminal)
