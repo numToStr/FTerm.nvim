@@ -14,6 +14,7 @@ function Terminal:new()
         win = nil,
         buf = nil,
         terminal = nil,
+        jobid = nil,
     }
 
     self.__index = self
@@ -131,6 +132,7 @@ function Terminal:term()
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
+        self.jobid = vim.b.terminal_job_id
 
         -- Need to setup different TermClose autocmd for different terminal instances
         -- Otherwise this will be overriden by other terminal aka custom terminal
@@ -181,6 +183,7 @@ function Terminal:close(force)
 
         self.buf = nil
         self.terminal = nil
+        self.jobid = nil
     end
 
     self:restore_cursor()
@@ -194,6 +197,12 @@ function Terminal:toggle()
     else
         self:close()
     end
+end
+
+-- Terminal:run is used to (open and) run commands to terminal window
+function Terminal:run(command)
+    self:open()
+    api.nvim_chan_send(self.jobid, command)
 end
 
 return Terminal
