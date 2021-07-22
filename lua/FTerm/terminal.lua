@@ -14,6 +14,7 @@ function Terminal:new()
         win = nil,
         buf = nil,
         terminal = nil,
+        jobid = nil,
     }
 
     self.__index = self
@@ -131,6 +132,7 @@ function Terminal:term()
 
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
+        self.jobid = vim.b.terminal_job_id
 
         -- Need to setup different TermClose autocmd for different terminal instances
         -- Otherwise this will be overriden by other terminal aka custom terminal
@@ -148,16 +150,23 @@ end
 
 -- Terminal:open does all the magic of opening terminal
 function Terminal:open()
-    self:remember_cursor()
 
-    local buf = self:create_buf()
+    -- Create new window and terminal if it doesn't exist
+    if not vim.tbl_contains(vim.api.nvim_list_wins(), self.win) then
+        self:remember_cursor()
 
-    local win = self:create_win(buf)
+        local buf = self:create_buf()
+        local win = self:create_win(buf)
 
-    self:term()
+        self:term()
 
-    -- Need to store the handles after opening the terminal
-    self:store(win, buf)
+        -- Need to store the handles after opening the terminal
+        self:store(win, buf)
+
+    else
+        -- move to right window
+        vim.api.nvim_set_current_win(self.wim)
+    end
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
@@ -181,6 +190,7 @@ function Terminal:close(force)
 
         self.buf = nil
         self.terminal = nil
+        self.jobid = nil
     end
 
     self:restore_cursor()
@@ -194,6 +204,12 @@ function Terminal:toggle()
     else
         self:close()
     end
+end
+
+-- Terminal:run is used to (open and) run commands to terminal window
+function Terminal:run(command)
+    self:open()
+    api.nvim_chan_send(self.jobid, command)
 end
 
 return Terminal
