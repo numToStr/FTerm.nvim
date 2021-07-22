@@ -143,14 +143,14 @@ function Terminal:term()
         -- https://github.com/numToStr/FTerm.nvim/pull/27/files#r674020429
         self.tjob_id = vim.b.terminal_job_id
 
-        -- Need to setup different TermClose autocmd for different terminal instances
-        -- Otherwise this will be overriden by other terminal aka custom terminal
-        Terminal.au_close[self.au_key] = function()
-            self:close(true)
-        end
-
         -- Only close the terminal buffer when `close_on_kill` is true
         if self.config.close_on_kill then
+            -- Need to setup different TermClose autocmd for different terminal instances
+            -- Otherwise this will be overriden by other terminal aka custom terminal
+            Terminal.au_close[self.au_key] = function()
+                self:close(true)
+            end
+
             -- This fires when someone executes `exit` inside term
             -- So, in this case the buffer should also be removed instead of reusing
             cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
