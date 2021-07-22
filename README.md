@@ -53,6 +53,10 @@ Options can be provided when calling `setup()`.
 
 > NOTE: This is not meant for edit in the default terminal. See [custom terminal](#custom-terminal) section for use case.
 
+-   `border`: Neovim's native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
+
+-   `close_on_kill`: Kill the terminal buffer as soon as shell exists (default: `true`)
+
 -   `dimensions`: Object containing the terminal window dimensions.
 
     The value for each field should be between `0` and `1`
@@ -61,8 +65,6 @@ Options can be provided when calling `setup()`.
     -   `width` - Width of the terminal window (default: `0.8`)
     -   `x` - X axis of the terminal window (default: `0.5`)
     -   `y` - Y axis of the terminal window (default: `0.5`)
-
--   `border`: Neovim's native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
 
 ### Setup
 
