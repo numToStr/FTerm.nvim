@@ -5,6 +5,8 @@ local O = {
     cmd = os.getenv('SHELL'),
     -- Neovim's native `nvim_open_win` border config
     border = 'single',
+    -- Kill the terminal buffer as soon as shell exists
+    close_on_kill = true,
     -- Dimensions are treated as percentage
     dimensions = {
         height = 0.8,
@@ -23,6 +25,8 @@ function U.create_config(opts)
         cmd = opts.cmd or O.cmd,
         dimensions = opts.dimensions and vim.tbl_extend('keep', opts.dimensions, O.dimensions) or O.dimensions,
         border = opts.border or O.border,
+        -- Also treat `nil` as false
+        close_on_kill = opts.close_on_kill and O.close_on_kill or false,
     }
 end
 

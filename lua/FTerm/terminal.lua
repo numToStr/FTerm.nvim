@@ -149,9 +149,12 @@ function Terminal:term()
             self:close(true)
         end
 
-        -- This fires when someone executes `exit` inside term
-        -- So, in this case the buffer should also be removed instead of reusing
-        cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
+        -- Only close the terminal buffer when `close_on_kill` is true
+        if self.config.close_on_kill then
+            -- This fires when someone executes `exit` inside term
+            -- So, in this case the buffer should also be removed instead of reusing
+            cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
+        end
     end
 
     cmd('startinsert')
