@@ -25,8 +25,7 @@ function U.create_config(opts)
         cmd = opts.cmd or O.cmd,
         dimensions = opts.dimensions and vim.tbl_extend('keep', opts.dimensions, O.dimensions) or O.dimensions,
         border = opts.border or O.border,
-        -- Also treat `nil` as false
-        close_on_kill = opts.close_on_kill and O.close_on_kill or false,
+        close_on_kill = opts.close_on_kill ~= false,
     }
 end
 
