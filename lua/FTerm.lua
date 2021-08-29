@@ -18,4 +18,8 @@ function M.toggle()
     t:toggle()
 end
 
+function M.run(...)
+    t:run(...)
+end
+
 return M

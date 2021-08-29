@@ -1,4 +1,4 @@
-local U = require('FTerm.config')
+local cfg = require('FTerm.config')
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
@@ -14,6 +14,7 @@ function Terminal:new()
         win = nil,
         buf = nil,
         terminal = nil,
+        tjob_id = nil,
     }
 
     self.__index = self
@@ -22,12 +23,12 @@ end
 
 -- Terminal:setup takes windows configuration ie. dimensions
 function Terminal:setup(opts)
-    self.config = U.create_config(opts)
+    self.config = cfg.create_config(opts)
 
     -- Give every terminal instance their own key
     -- by converting the given cmd into a hex string
     -- This is to be used with autocmd
-    self.au_key = U.to_hex(self.config.cmd)
+    self.au_key = cfg.to_hex(self.config.cmd)
 
     self:win_dim()
 
@@ -59,8 +60,9 @@ end
 function Terminal:restore_cursor()
     if self.last_win and self.last_pos ~= nil then
         if self.prev_win > 0 then
-            cmd('silent! '..self.prev_win..'wincmd w')
+            cmd('silent! ' .. self.prev_win .. 'wincmd w')
         end
+
         api.nvim_set_current_win(self.last_win)
         api.nvim_win_set_cursor(self.last_win, self.last_pos)
 
@@ -137,6 +139,10 @@ function Terminal:term()
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
 
+        -- Explanation behind the `b.terminal_job_id`
+        -- https://github.com/numToStr/FTerm.nvim/pull/27/files#r674020429
+        self.tjob_id = vim.b.terminal_job_id
+
         -- Need to setup different TermClose autocmd for different terminal instances
         -- Otherwise this will be overriden by other terminal aka custom terminal
         Terminal.au_close[self.au_key] = function()
@@ -153,10 +159,15 @@ end
 
 -- Terminal:open does all the magic of opening terminal
 function Terminal:open()
+    -- Move to existing window if the window already exists
+    if self.win and api.nvim_win_is_valid(self.win) then
+        return api.nvim_set_current_win(self.win)
+    end
+
+    -- Create new window and terminal if it doesn't exist
     self:remember_cursor()
 
     local buf = self:create_buf()
-
     local win = self:create_win(buf)
 
     self:term()
@@ -186,6 +197,7 @@ function Terminal:close(force)
 
         self.buf = nil
         self.terminal = nil
+        self.tjob_id = nil
     end
 
     self:restore_cursor()
@@ -199,6 +211,12 @@ function Terminal:toggle()
     else
         self:close()
     end
+end
+
+-- Terminal:run is used to (open and) run commands to terminal window
+function Terminal:run(command)
+    self:open()
+    api.nvim_chan_send(self.tjob_id, command)
 end
 
 return Terminal
