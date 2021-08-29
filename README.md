@@ -43,6 +43,8 @@ lua require('FTerm').setup()
 
 -   `require('FTerm').toggle()` - To toggle the terminal
 
+-   `require('FTerm').run(...)` - To run arbitrary command inside the terminal. [Read More](#running-one-off-commands)
+
 ### Configuration
 
 Options can be provided when calling `setup()`.
@@ -82,6 +84,25 @@ local opts = { noremap = true, silent = true }
 
 map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
 map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
+```
+
+### Running one-off commands
+
+There may be a situation when you want to run some commands like `yarn build` or something. You can do that by using the `run` method which will open the terminal and run the provided command. Keep in mind that after the command finishes/exits, the terminal won't close automatically. You have to close that manually, if you want to or you can reuse the terminal.
+
+```lua
+local fterm = require('FTerm')
+
+-- Setup with the default config
+fterm.setup()
+
+-- Now use `run` method
+function _G.yarn_build()
+    fterm.run('yarn build\n')
+end
+
+-- Or you can do this
+vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 ```
 
 ### Custom Terminal
