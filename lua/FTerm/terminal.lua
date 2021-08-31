@@ -1,4 +1,6 @@
 local cfg = require('FTerm.config')
+local utils = require('FTerm.utils')
+
 local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
@@ -100,7 +102,7 @@ function Terminal:create_buf()
     -- If previous buffer exists then return it
     local prev = self.buf
 
-    if prev and api.nvim_buf_is_loaded(prev) then
+    if utils.is_buf_valid(prev) then
         return prev
     end
 
@@ -132,7 +134,8 @@ end
 
 -- Terminal:term opens a terminal inside a buffer
 function Terminal:term()
-    if not self.buf then
+    -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
+    if not utils.is_buf_valid(self.buf) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
         local pid = fn.termopen(self.config.cmd)
 
@@ -143,8 +146,8 @@ function Terminal:term()
         -- https://github.com/numToStr/FTerm.nvim/pull/27/files#r674020429
         self.tjob_id = vim.b.terminal_job_id
 
-        -- Only close the terminal buffer when `close_on_kill` is true
-        if self.config.close_on_kill then
+        -- Only close the terminal buffer when `auto_close` is true
+        if self.config.auto_close then
             -- Need to setup different TermClose autocmd for different terminal instances
             -- Otherwise this will be overriden by other terminal aka custom terminal
             Terminal.au_close[self.au_key] = function()
@@ -163,7 +166,7 @@ end
 -- Terminal:open does all the magic of opening terminal
 function Terminal:open()
     -- Move to existing window if the window already exists
-    if self.win and api.nvim_win_is_valid(self.win) then
+    if utils.is_win_valid(self.win) then
         return api.nvim_set_current_win(self.win)
     end
 
@@ -185,14 +188,14 @@ function Terminal:close(force)
         return
     end
 
-    if api.nvim_win_is_valid(self.win) then
+    if utils.is_win_valid(self.win) then
         api.nvim_win_close(self.win, {})
     end
 
     self.win = nil
 
     if force then
-        if api.nvim_buf_is_loaded(self.buf) then
+        if utils.is_buf_valid(self.buf) then
             api.nvim_buf_delete(self.buf, { force = true })
         end
 
@@ -209,10 +212,10 @@ end
 -- Terminal:toggle is used to toggle the terminal window
 function Terminal:toggle()
     -- If window is stored then it is already opened
-    if not self.win then
-        self:open()
-    else
+    if utils.is_win_valid(self.win) then
         self:close()
+    else
+        self:open()
     end
 end
 
