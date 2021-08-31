@@ -55,7 +55,7 @@ Options can be provided when calling `setup()`.
 
 -   `border`: Neovim's native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
 
--   `close_on_kill`: Kill the terminal buffer as soon as shell exists (default: `true`)
+-   `auto_close`: Close the terminal as soon as shell/command exits (default: `true`). Disabling this will mimic the native terminal behaviour.
 
 -   `dimensions`: Object containing the terminal window dimensions.
 

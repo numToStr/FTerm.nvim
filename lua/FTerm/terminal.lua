@@ -211,7 +211,7 @@ end
 
 -- Terminal:toggle is used to toggle the terminal window
 function Terminal:toggle()
-    -- If window is stored then it is already opened
+    -- If window is stored and valid then it is already opened, then close it
     if utils.is_win_valid(self.win) then
         self:close()
     else
