@@ -3,23 +3,23 @@ local t = require('FTerm.terminal'):new()
 local M = {}
 
 function M.setup(opts)
-    t:setup(opts)
+    return t:setup(opts)
 end
 
 function M.open()
-    t:open()
+    return t:open()
 end
 
 function M.close()
-    t:close()
+    return t:close()
 end
 
 function M.toggle()
-    t:toggle()
+    return t:toggle()
 end
 
 function M.run(...)
-    t:run(...)
+    return t:run(...)
 end
 
 return M

@@ -48,6 +48,8 @@ end
 function Terminal:store(win, buf)
     self.win = win
     self.buf = buf
+
+    return self
 end
 
 -- Terminal:remember_cursor stores the last cursor position and window
@@ -55,6 +57,8 @@ function Terminal:remember_cursor()
     self.last_win = api.nvim_get_current_win()
     self.prev_win = fn.winnr('#')
     self.last_pos = api.nvim_win_get_cursor(self.last_win)
+
+    return self
 end
 
 -- Terminal:restore_cursor restores the cursor to the last remembered position
@@ -71,11 +75,15 @@ function Terminal:restore_cursor()
         self.prev_win = nil
         self.last_pos = nil
     end
+
+    return self
 end
 
 -- Terminal:win_dim return window dimensions
 function Terminal:win_dim()
     self.dims = utils.build_dimensions(self.config.dimensions)
+
+    return self
 end
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
@@ -142,6 +150,8 @@ function Terminal:term()
     end
 
     cmd('startinsert')
+
+    return self
 end
 
 -- Terminal:open does all the magic of opening terminal
@@ -161,6 +171,8 @@ function Terminal:open()
 
     -- Need to store the handles after opening the terminal
     self:store(win, buf)
+
+    return self
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
@@ -188,6 +200,8 @@ function Terminal:close(force)
     end
 
     self:restore_cursor()
+
+    return self
 end
 
 -- Terminal:toggle is used to toggle the terminal window
@@ -198,12 +212,16 @@ function Terminal:toggle()
     else
         self:open()
     end
+
+    return self
 end
 
 -- Terminal:run is used to (open and) run commands to terminal window
 function Terminal:run(command)
     self:open()
     api.nvim_chan_send(self.tjob_id, command)
+
+    return self
 end
 
 return Terminal
