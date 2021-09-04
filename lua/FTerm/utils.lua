@@ -53,10 +53,4 @@ function u.is_buf_valid(buf)
     return buf and vim.api.nvim_buf_is_loaded(buf)
 end
 
-function u.to_hex(str)
-    return str:gsub('.', function(c)
-        return string.format('%02X', string.byte(c))
-    end)
-end
-
 return u

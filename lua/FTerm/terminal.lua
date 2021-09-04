@@ -29,17 +29,17 @@ function Terminal:setup(cfg)
     -- Give every terminal instance their own key
     -- by converting the given cmd into a hex string
     -- This is to be used with autocmd
-    self.au_key = utils.to_hex(self.config.cmd)
+    self.key = tostring(self.config)
 
     self:win_dim()
 
     -- Need to setup different autocmd for different terminal instances
     -- Otherwise autocmd will be overriden by other terminal aka custom terminal
-    Terminal.au_resize[self.au_key] = function()
+    Terminal.au_resize[self.key] = function()
         self:win_dim()
     end
 
-    cmd("autocmd VimResized * lua require('FTerm.terminal').au_resize['" .. self.au_key .. "']()")
+    cmd(string.format("autocmd VimResized * lua require('FTerm.terminal').au_resize['%s']()", self.key))
 
     return self
 end
@@ -139,13 +139,13 @@ function Terminal:term()
         if self.config.auto_close then
             -- Need to setup different TermClose autocmd for different terminal instances
             -- Otherwise this will be overriden by other terminal aka custom terminal
-            Terminal.au_close[self.au_key] = function()
+            Terminal.au_close[self.key] = function()
                 self:close(true)
             end
 
             -- This fires when someone executes `exit` inside term
             -- So, in this case the buffer should also be removed instead of reusing
-            cmd("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['" .. self.au_key .. "']()")
+            cmd(string.format("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['%s']()", self.key))
         end
     end
 
