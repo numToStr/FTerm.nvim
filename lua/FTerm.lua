@@ -31,4 +31,12 @@ function M.run(...)
     t:run(...)
 end
 
+---To create a scratch (use and throw) terminal. Like those good ol' C++ build terminal.
+---@param cfg table
+function M.scratch(cfg)
+    cfg.auto_close = false
+
+    M:new(cfg):toggle()
+end
+
 return M
