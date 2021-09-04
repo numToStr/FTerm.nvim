@@ -1,6 +1,6 @@
 local u = {}
 
-local defaults = {
+u.defaults = {
     -- Run the default shell in the terminal
     cmd = os.getenv('SHELL'),
     -- Neovim's native `nvim_open_win` border config
@@ -15,14 +15,6 @@ local defaults = {
         y = 0.5,
     },
 }
-
-function u.build_config(cfg)
-    if not cfg then
-        return defaults
-    end
-
-    return vim.tbl_deep_extend('force', defaults, cfg)
-end
 
 function u.build_dimensions(opts)
     -- get lines and columns
