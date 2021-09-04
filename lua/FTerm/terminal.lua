@@ -1,4 +1,3 @@
-local cfg = require('FTerm.config')
 local utils = require('FTerm.utils')
 
 local api = vim.api
@@ -24,13 +23,13 @@ function Terminal:new()
 end
 
 -- Terminal:setup takes windows configuration ie. dimensions
-function Terminal:setup(opts)
-    self.config = cfg.create_config(opts)
+function Terminal:setup(cfg)
+    self.config = utils.build_config(cfg)
 
     -- Give every terminal instance their own key
     -- by converting the given cmd into a hex string
     -- This is to be used with autocmd
-    self.au_key = cfg.to_hex(self.config.cmd)
+    self.au_key = utils.to_hex(self.config.cmd)
 
     self:win_dim()
 
@@ -76,25 +75,7 @@ end
 
 -- Terminal:win_dim return window dimensions
 function Terminal:win_dim()
-    -- get dimensions
-    local d = self.config.dimensions
-    local cl = vim.o.columns
-    local ln = vim.o.lines
-
-    -- calculate our floating window size
-    local width = math.ceil(cl * d.width)
-    local height = math.ceil(ln * d.height - 4)
-
-    -- and its starting position
-    local col = math.ceil((cl - width) * d.x)
-    local row = math.ceil((ln - height) * d.y - 1)
-
-    self.dims = {
-        width = width,
-        height = height,
-        col = col,
-        row = row,
-    }
+    self.dims = utils.build_dimensions(self.config.dimensions)
 end
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
