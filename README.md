@@ -109,16 +109,16 @@ vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 
 ### Custom Terminal
 
-By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the underlying terminal function and overriding the default command.
+By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command.
 
 Below are some examples:
 
 -   Running [gitui](https://github.com/extrawurst/gitui)
 
 ```lua
-local term = require("FTerm.terminal")
+local fterm = require("FTerm")
 
-local gitui = term:new():setup({
+local gitui = fterm:new({
     cmd = "gitui",
     dimensions = {
         height = 0.9,
@@ -139,11 +139,9 @@ Screenshot
 -   Running [bpytop](https://github.com/aristocratos/bpytop)
 
 ```lua
-local term = require("FTerm.terminal")
+local fterm = require("FTerm")
 
-local top = term:new():setup({
-    cmd = "bpytop"
-})
+local top = fterm:new({ cmd = "bpytop" })
 
  -- Use this to toggle bpytop in a floating terminal
 function _G.__fterm_top()

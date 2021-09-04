@@ -1,25 +1,34 @@
-local t = require('FTerm.terminal'):new()
+local Term = require('FTerm.terminal')
+
+local t = Term:new()
 
 local M = {}
 
+---To create a custom terminal by overriding the default command
+---@param cfg table
+---@return table
+function M:new(cfg)
+    return Term:new():setup(cfg)
+end
+
 function M.setup(opts)
-    return t:setup(opts)
+    t:setup(opts)
 end
 
 function M.open()
-    return t:open()
+    t:open()
 end
 
 function M.close()
-    return t:close()
+    t:close()
 end
 
 function M.toggle()
-    return t:toggle()
+    t:toggle()
 end
 
 function M.run(...)
-    return t:run(...)
+    t:run(...)
 end
 
 return M
