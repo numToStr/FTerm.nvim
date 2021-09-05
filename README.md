@@ -84,6 +84,8 @@ vim.cmd('command! FTermOpen lua require("FTerm").open()')
 
 -   Closing the terminal
 
+> This will close the terminal window but preserves the actual terminal session
+
 ```lua
 lua require('FTerm').close()
 
@@ -91,7 +93,16 @@ lua require('FTerm').close()
 vim.cmd('command! FTermClose lua require("FTerm").close()')
 ```
 
-> Actually this closes the floating window not the actual terminal buffer
+-   Exiting the terminal
+
+> Unlike closing, this will remove the terminal session
+
+```lua
+lua require('FTerm').exit()
+
+-- or create a vim command
+vim.cmd('command! FTermExit lua require("FTerm").exit()')
+```
 
 -   Toggling the terminal
 

@@ -27,6 +27,11 @@ function M.close()
     t:close()
 end
 
+---Exits the terminal session
+function M.exit()
+    t:close(true)
+end
+
 ---Toggles the default terminal
 function M.toggle()
     t:toggle()
