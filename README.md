@@ -113,7 +113,20 @@ lua require('FTerm').run("man ls\n")
 vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 ```
 
-> NOTE: See also [scratch terminal](#scratch-terminal).
+### Scratch Terminal
+
+You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses [custom terminal](#custom-terminal) under the hood.
+
+```lua
+lua require('FTerm').scratch({ cmd = 'yarn build' })
+
+-- Actually this is just an alias for
+lua require('FTerm'):new({ cmd = 'yarn build', auto_close = false }):toggle()
+
+-- Scratch terminals are awesome because you can do this
+vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
+vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')
+```
 
 ### Custom Terminal
 
@@ -160,21 +173,6 @@ end
 Screenshot
 
 ![bpytop](https://user-images.githubusercontent.com/24727447/115376384-47917180-a1ec-11eb-9717-8dbf21465428.png "bpytop in floating terminal")
-
-### Scratch Terminal
-
-You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses custom terminal under the hood.
-
-```lua
-lua require('FTerm').scratch({ cmd = 'yarn build' })
-
--- Actually this is just an alias for
-lua require('FTerm'):new({ cmd = 'yarn build', auto_close = false }):toggle()
-
--- Scratch terminals are awesome because you can do this
-vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
-vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')
-```
 
 ### Credits
 
