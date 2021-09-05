@@ -46,7 +46,7 @@ map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
 
 #### Configuration
 
-Following options can be provided when calling `setup({options})`. Below is the default configuration:
+Following options can be provided when calling `setup({config})`. Below is the default configuration:
 
 ```lua
 {
@@ -113,9 +113,11 @@ lua require('FTerm').run("man ls\n")
 vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 ```
 
+> NOTE: See also [scratch terminal](#scratch-terminal).
+
 ### Custom Terminal
 
-By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command. This is useful if you want a separate terminal and command you want to run is a long running process otherwise see [scratch terminal](#scratch-terminal).
+By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command. This is useful if you want a separate terminal and the command you want to run is a long-running process. If not, see [scratch terminal](#scratch-terminal).
 
 Below are some examples:
 
@@ -161,7 +163,18 @@ Screenshot
 
 ### Scratch Terminal
 
-TODO: docs
+You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses custom terminal under the hood.
+
+```lua
+lua require('FTerm').scratch({ cmd = 'yarn build' })
+
+-- Actually this is just an alias for
+lua require('FTerm'):new({ cmd = 'yarn build', auto_close = false }):toggle()
+
+-- Scratch terminals are awesome because you can do this
+vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
+vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')
+```
 
 ### Credits
 
