@@ -13,22 +13,13 @@
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use {
-    "numtostr/FTerm.nvim",
-    config = function()
-        require("FTerm").setup()
-    end
-}
+use "numtostr/FTerm.nvim"
 ```
 
 -   With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'numtostr/FTerm.nvim'
-
-" Somewhere after plug#end()
-
-lua require('FTerm').setup()
 ```
 
 ### Setup (optional)
