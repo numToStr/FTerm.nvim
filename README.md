@@ -13,27 +13,67 @@
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use {
-    "numtostr/FTerm.nvim",
-    config = function()
-        require("FTerm").setup()
-    end
-}
+use "numtostr/FTerm.nvim"
 ```
 
 -   With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'numtostr/FTerm.nvim'
-
-" Somewhere after plug#end()
-
-lua require('FTerm').setup()
 ```
 
-### Functions
+### Setup (optional)
 
--   `require('FTerm').setup()` - To configure the terminal window.
+`FTerm` default terminal has sane defaults. If you want to use the default configuration then you don't have to do anything but you can override the default configuration by calling `setup()`.
+
+```lua
+
+require'FTerm'.setup({
+    border = 'double',
+    dimensions  = {
+        height = 0.9,
+        width = 0.9,
+    },
+})
+
+-- Example keybindings
+local map = vim.api.nvim_set_keymap
+local opts = { noremap = true, silent = true }
+
+map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
+map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
+```
+
+#### Configuration
+
+Following options can be provided when calling `setup({options})`. Below is the default configuration:
+
+```lua
+{
+    -- Command to run inside the terminal
+    cmd = os.getenv('SHELL'),
+
+    -- Neovim's native window border. See `:h nvim_open_win` for more configuration options.
+    border = 'single',
+
+    -- Close the terminal as soon as shell/command exits.
+    -- Disabling this will mimic the native terminal behaviour.
+    auto_close = true,
+
+    -- Object containing the terminal window dimensions.
+    -- The value for each field should be between `0` and `1`
+    dimensions = {
+        height = 0.8, -- Height of the terminal window
+        width = 0.8, -- Width of the terminal window
+        x = 0.5 -- X axis of the terminal window
+        y = 0.5 -- Y axis of the terminal window
+    }
+}
+```
+
+> NOTE: See [custom terminal](#custom-terminal) section for more use cases.
+
+### Usage
 
 -   `require('FTerm').open()` - To open the terminal
 
@@ -44,49 +84,6 @@ lua require('FTerm').setup()
 -   `require('FTerm').toggle()` - To toggle the terminal
 
 -   `require('FTerm').run(...)` - To run arbitrary command inside the terminal. [Read More](#running-one-off-commands)
-
-### Configuration
-
-Options can be provided when calling `setup()`.
-
--   `cmd`: Command to run inside the terminal. (default: `os.getenv('SHELL')`)
-
-> NOTE: This is not meant for edit in the default terminal. See [custom terminal](#custom-terminal) section for use case.
-
--   `border`: Neovim's native window border (default: `single`). See `:h nvim_open_win` for more configuration options.
-
--   `auto_close`: Close the terminal as soon as shell/command exits (default: `true`). Disabling this will mimic the native terminal behaviour.
-
--   `dimensions`: Object containing the terminal window dimensions.
-
-    The value for each field should be between `0` and `1`
-
-    -   `height` - Height of the terminal window (default: `0.8`)
-    -   `width` - Width of the terminal window (default: `0.8`)
-    -   `x` - X axis of the terminal window (default: `0.5`)
-    -   `y` - Y axis of the terminal window (default: `0.5`)
-
-### Setup
-
-```lua
-
-require'FTerm'.setup({
-    dimensions  = {
-        height = 0.8,
-        width = 0.8,
-        x = 0.5,
-        y = 0.5
-    },
-    border = 'single' -- or 'double'
-})
-
--- Keybinding
-local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
-
-map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
-map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
-```
 
 ### Running one-off commands
 

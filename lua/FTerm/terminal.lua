@@ -15,15 +15,20 @@ function Terminal:new()
         buf = nil,
         terminal = nil,
         tjob_id = nil,
+        config = utils.defaults,
     }
 
     self.__index = self
     return setmetatable(state, self)
 end
 
--- Terminal:setup takes windows configuration ie. dimensions
+-- Terminal:setup overrides the terminal windows configuration ie. dimensions
 function Terminal:setup(cfg)
-    self.config = utils.build_config(cfg)
+    if not cfg then
+        return vim.notify('FTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
+    end
+
+    self.config = vim.tbl_deep_extend('force', self.config, cfg)
 
     return self
 end
