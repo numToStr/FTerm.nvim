@@ -71,8 +71,6 @@ Following options can be provided when calling `setup({options})`. Below is the 
 }
 ```
 
-> NOTE: See [custom terminal](#custom-terminal) section for more use cases.
-
 ### Usage
 
 -   Opening the terminal
@@ -117,7 +115,7 @@ vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 
 ### Custom Terminal
 
-By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command.This is useful if you want a separate terminal and command you want to run is a long running process otherwise see [scratch terminal](#scratch-terminal).
+By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command. This is useful if you want a separate terminal and command you want to run is a long running process otherwise see [scratch terminal](#scratch-terminal).
 
 Below are some examples:
 
