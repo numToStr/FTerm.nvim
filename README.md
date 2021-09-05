@@ -46,7 +46,7 @@ map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
 
 #### Configuration
 
-Following options can be provided when calling `setup({options})`. Below is the default configuration:
+Following options can be provided when calling `setup({config})`. Below is the default configuration:
 
 ```lua
 {
@@ -71,42 +71,66 @@ Following options can be provided when calling `setup({options})`. Below is the 
 }
 ```
 
-> NOTE: See [custom terminal](#custom-terminal) section for more use cases.
-
 ### Usage
 
--   `require('FTerm').open()` - To open the terminal
-
--   `require('FTerm').close()` - To close the terminal
-
-    > Actually this closes the floating window not the actual terminal buffer
-
--   `require('FTerm').toggle()` - To toggle the terminal
-
--   `require('FTerm').run(...)` - To run arbitrary command inside the terminal. [Read More](#running-one-off-commands)
-
-### Running one-off commands
-
-There may be a situation when you want to run some commands like `yarn build` or something. You can do that by using the `run` method which will open the terminal and run the provided command. Keep in mind that after the command finishes/exits, the terminal won't close automatically. You have to close that manually, if you want to or you can reuse the terminal.
+-   Opening the terminal
 
 ```lua
-local fterm = require('FTerm')
+lua require('FTerm').open()
 
--- Setup with the default config
-fterm.setup()
+-- or create a vim command
+vim.cmd('command! FTermOpen lua require("FTerm").open()')
+```
 
--- Now use `run` method
-function _G.yarn_build()
-    fterm.run('yarn build\n')
-end
+-   Closing the terminal
+
+```lua
+lua require('FTerm').close()
+
+-- or create a vim command
+vim.cmd('command! FTermClose lua require("FTerm").close()')
+```
+
+> Actually this closes the floating window not the actual terminal buffer
+
+-   Toggling the terminal
+
+```lua
+lua require('FTerm').toggle()
+
+-- or create a vim command
+vim.cmd("command! FTermClose lua require("FTerm').toggle()')
+```
+
+-   Running commands
+
+If you want to run some commands, you can do that by using the `run` method. This method uses the default terminal and doesn't override the default command (which is usually your shell). Because of this when the command finishes/exits, the terminal won't close automatically.
+
+```lua
+lua require('FTerm').run("man ls\n")
 
 -- Or you can do this
 vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
 ```
 
+### Scratch Terminal
+
+You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses [custom terminal](#custom-terminal) under the hood.
+
+```lua
+lua require('FTerm').scratch({ cmd = 'yarn build' })
+
+-- Actually this is just an alias for
+lua require('FTerm'):new({ cmd = 'yarn build', auto_close = false }):toggle()
+
+-- Scratch terminals are awesome because you can do this
+vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
+vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')
+```
+
 ### Custom Terminal
 
-By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command.
+By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command. This is useful if you want a separate terminal and the command you want to run is a long-running process. If not, see [scratch terminal](#scratch-terminal).
 
 Below are some examples:
 
