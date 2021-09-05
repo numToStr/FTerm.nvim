@@ -25,7 +25,7 @@ end
 -- Terminal:setup overrides the terminal windows configuration ie. dimensions
 function Terminal:setup(cfg)
     if not cfg then
-        return vim.notify('FTerm: setup() is now optional. Please remove it!', vim.log.levels.WARN)
+        return vim.notify('FTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
     end
 
     self.config = vim.tbl_deep_extend('force', self.config, cfg)
