@@ -131,9 +131,6 @@ You can also create scratch terminal for ephemeral processes like build commands
 ```lua
 lua require('FTerm').scratch({ cmd = 'yarn build' })
 
--- Actually this is just an alias for
-lua require('FTerm'):new({ cmd = 'yarn build', auto_close = false }):toggle()
-
 -- Scratch terminals are awesome because you can do this
 vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
 vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')

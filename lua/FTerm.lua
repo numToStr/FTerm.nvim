@@ -52,7 +52,7 @@ function M.scratch(cfg)
 
     cfg.auto_close = false
 
-    M:new(cfg):toggle()
+    M:new(cfg):open()
 end
 
 return M
