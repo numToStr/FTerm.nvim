@@ -110,6 +110,7 @@ function Terminal:term()
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
         local pid = fn.termopen(self.config.cmd)
 
+
         -- IDK what to do with this now, maybe later we can use it
         self.terminal = pid
 
@@ -133,6 +134,9 @@ function Terminal:term()
             cmd(string.format("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['%s']()", key))
         end
     end
+
+    -- This prevents the filetype being changed to term instead of fterm
+    api.nvim_buf_set_option(self.buf, 'filetype', 'FTerm')
 
     cmd('startinsert')
 
