@@ -85,10 +85,12 @@ end
 
 -- Terminal:create_win creates a new window with a given buffer
 function Terminal:create_win(buf)
-    local dim = utils.build_dimensions(self.config.dimensions)
+    local cfg = self.config
+
+    local dim = utils.build_dimensions(cfg.dimensions)
 
     local win = api.nvim_open_win(buf, true, {
-        border = self.config.border,
+        border = cfg.border,
         relative = 'editor',
         style = 'minimal',
         width = dim.width,
@@ -97,7 +99,8 @@ function Terminal:create_win(buf)
         row = dim.row,
     })
 
-    api.nvim_win_set_option(win, 'winhl', 'Normal:Normal')
+    api.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.win.hl)
+    api.nvim_win_set_option(win, 'winblend', cfg.win.blend)
 
 
     return win

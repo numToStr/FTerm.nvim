@@ -67,7 +67,13 @@ Following options can be provided when calling `setup({config})`. Below is the d
         width = 0.8, -- Width of the terminal window
         x = 0.5 -- X axis of the terminal window
         y = 0.5 -- Y axis of the terminal window
-    }
+    },
+
+    -- Floating window options. This will change the terminal window appearance
+    win = {
+        hl = 'Normal', -- Highlight group
+        blend = 0, -- Transparency
+    },
 }
 ```
 

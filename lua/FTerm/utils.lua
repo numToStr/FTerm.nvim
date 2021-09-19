@@ -14,6 +14,11 @@ u.defaults = {
         x = 0.5,
         y = 0.5,
     },
+    -- Floating window options
+    win = {
+        hl = 'Normal', -- Highlight group
+        blend = 0, -- Transparency
+    },
 }
 
 function u.build_dimensions(opts)
