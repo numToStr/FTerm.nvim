@@ -76,8 +76,11 @@ function Terminal:create_buf()
     if utils.is_buf_valid(prev) then
         return prev
     end
+    local buf = api.nvim_create_buf(false, true)
+    -- this ensures filetype is set to Fterm on first run
+    api.nvim_buf_set_option(buf, 'filetype', 'FTerm')
 
-    return api.nvim_create_buf(false, true)
+    return buf
 end
 
 -- Terminal:create_win creates a new window with a given buffer
@@ -95,6 +98,7 @@ function Terminal:create_win(buf)
     })
 
     api.nvim_win_set_option(win, 'winhl', 'Normal:Normal')
+
 
     return win
 end
@@ -131,7 +135,7 @@ function Terminal:term()
         end
     end
 
-    -- This prevents the filetype being changed to term instead of fterm
+    -- This prevents the filetype being changed to term instead of fterm when closing the floating window
     api.nvim_buf_set_option(self.buf, 'filetype', 'FTerm')
 
     cmd('startinsert')
