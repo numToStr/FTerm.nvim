@@ -96,10 +96,6 @@ function Terminal:create_win(buf)
 
     api.nvim_win_set_option(win, 'winhl', 'Normal:Normal')
 
-    -- Setting filetype in `create_win()` instead of `create_buf()` because window options
-    -- such as `winhl`, `winblend` should be available after the window is created.
-    api.nvim_buf_set_option(buf, 'filetype', 'FTerm')
-
     return win
 end
 
