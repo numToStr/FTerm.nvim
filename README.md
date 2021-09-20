@@ -27,7 +27,6 @@ Plug 'numtostr/FTerm.nvim'
 `FTerm` default terminal has sane defaults. If you want to use the default configuration then you don't have to do anything but you can override the default configuration by calling `setup()`.
 
 ```lua
-
 require'FTerm'.setup({
     border = 'double',
     dimensions  = {
@@ -60,6 +59,12 @@ Following options can be provided when calling `setup({config})`. Below is the d
     -- Disabling this will mimic the native terminal behaviour.
     auto_close = true,
 
+    -- Highlight group for the terminal. See `:h winhl`
+    hl = 'Normal',
+
+    -- Transparency of the floating window. See `:h winblend`
+    blend = 0,
+
     -- Object containing the terminal window dimensions.
     -- The value for each field should be between `0` and `1`
     dimensions = {
@@ -67,13 +72,7 @@ Following options can be provided when calling `setup({config})`. Below is the d
         width = 0.8, -- Width of the terminal window
         x = 0.5 -- X axis of the terminal window
         y = 0.5 -- Y axis of the terminal window
-    },
-
-    -- Floating window options. This will change the terminal window appearance
-    win = {
-        hl = 'Normal', -- Highlight group
-        blend = 0, -- Transparency
-    },
+    }
 }
 ```
 

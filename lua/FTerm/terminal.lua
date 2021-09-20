@@ -103,8 +103,8 @@ function Terminal:create_win(buf)
         row = dim.row,
     })
 
-    api.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.win.hl)
-    api.nvim_win_set_option(win, 'winblend', cfg.win.blend)
+    api.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.hl)
+    api.nvim_win_set_option(win, 'winblend', cfg.blend)
 
     return win
 end

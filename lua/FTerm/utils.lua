@@ -7,17 +7,16 @@ u.defaults = {
     border = 'single',
     -- Close the terminal as soon as shell/command exits
     auto_close = true,
+    -- Highlight group for the terminal
+    hl = 'Normal',
+    -- Transparency of the window
+    blend = 0,
     -- Dimensions are treated as percentage
     dimensions = {
         height = 0.8,
         width = 0.8,
         x = 0.5,
         y = 0.5,
-    },
-    -- Floating window options
-    win = {
-        hl = 'Normal', -- Highlight group
-        blend = 0, -- Transparency
     },
 }
 
