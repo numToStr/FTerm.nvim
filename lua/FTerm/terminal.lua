@@ -4,6 +4,8 @@ local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
+local ft = 'FTerm'
+
 local Terminal = {
     au_close = {},
 }
@@ -76,19 +78,23 @@ function Terminal:create_buf()
     if utils.is_buf_valid(prev) then
         return prev
     end
+
     local buf = api.nvim_create_buf(false, true)
+
     -- this ensures filetype is set to Fterm on first run
-    api.nvim_buf_set_option(buf, 'filetype', 'FTerm')
+    api.nvim_buf_set_option(buf, 'filetype', ft)
 
     return buf
 end
 
 -- Terminal:create_win creates a new window with a given buffer
 function Terminal:create_win(buf)
-    local dim = utils.build_dimensions(self.config.dimensions)
+    local cfg = self.config
+
+    local dim = utils.build_dimensions(cfg.dimensions)
 
     local win = api.nvim_open_win(buf, true, {
-        border = self.config.border,
+        border = cfg.border,
         relative = 'editor',
         style = 'minimal',
         width = dim.width,
@@ -97,8 +103,8 @@ function Terminal:create_win(buf)
         row = dim.row,
     })
 
-    api.nvim_win_set_option(win, 'winhl', 'Normal:Normal')
-
+    api.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.hl)
+    api.nvim_win_set_option(win, 'winblend', cfg.blend)
 
     return win
 end
@@ -135,7 +141,7 @@ function Terminal:term()
     end
 
     -- This prevents the filetype being changed to term instead of fterm when closing the floating window
-    api.nvim_buf_set_option(self.buf, 'filetype', 'FTerm')
+    api.nvim_buf_set_option(self.buf, 'filetype', ft)
 
     cmd('startinsert')
 

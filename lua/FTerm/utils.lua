@@ -7,6 +7,10 @@ u.defaults = {
     border = 'single',
     -- Close the terminal as soon as shell/command exits
     auto_close = true,
+    -- Highlight group for the terminal
+    hl = 'Normal',
+    -- Transparency of the window
+    blend = 0,
     -- Dimensions are treated as percentage
     dimensions = {
         height = 0.8,
