@@ -49,7 +49,7 @@ Following options can be provided when calling `setup({config})`. Below is the d
 
 ```lua
 {
-    -- Command to run inside the terminal
+    -- Command to run inside the terminal. It could be a `string` or `table`
     cmd = os.getenv('SHELL'),
 
     -- Neovim's native window border. See `:h nvim_open_win` for more configuration options.
@@ -115,18 +115,24 @@ vim.cmd('command! FTermExit lua require("FTerm").exit()')
 lua require('FTerm').toggle()
 
 -- or create a vim command
-vim.cmd("command! FTermClose lua require("FTerm').toggle()')
+vim.cmd('command! FTermClose lua require("FTerm").toggle()')
 ```
 
 -   Running commands
 
 If you want to run some commands, you can do that by using the `run` method. This method uses the default terminal and doesn't override the default command (which is usually your shell). Because of this when the command finishes/exits, the terminal won't close automatically.
 
+> NOTE: There is no need to add `\n` at the end of the command
+
 ```lua
-lua require('FTerm').run("man ls\n")
+-- run() can take `string` or `table` just like `cmd` config
+lua require('FTerm').run('man ls') -- with string
+lua require('FTerm').run({'yarn', 'build'})
+lua require('FTerm').run({'node', vim.api.nvim_get_current_buf()})
 
 -- Or you can do this
-vim.cmd('command! YarnBuild lua require("FTerm").run("yarn build\n")')
+vim.cmd('command! ManLs lua require("FTerm").run("man ls")')
+vim.cmd('command! YarnBuild lua require("FTerm").run({"yarn", "build"})')
 ```
 
 ### Scratch Terminal
@@ -135,10 +141,11 @@ You can also create scratch terminal for ephemeral processes like build commands
 
 ```lua
 lua require('FTerm').scratch({ cmd = 'yarn build' })
+lua require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv('RUST_TARGET')} })
 
 -- Scratch terminals are awesome because you can do this
 vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
-vim.cmd('command! TfApply lua require("FTerm").scratch({ cmd = "terraform apply" })')
+vim.cmd('command! CargoBuild lua require("FTerm").scratch({ cmd = {"cargo", "build", "--target", os.getenv("RUST_TARGET")} })')
 ```
 
 ### Custom Terminal
