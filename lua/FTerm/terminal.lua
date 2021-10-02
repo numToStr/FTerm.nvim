@@ -31,6 +31,7 @@ function Terminal:setup(cfg)
     end
 
     self.config = vim.tbl_deep_extend('force', self.config, cfg)
+    self.config.cmd = utils.build_cmd(self.config.cmd)
 
     return self
 end
@@ -213,7 +214,9 @@ end
 -- Terminal:run is used to (open and) run commands to terminal window
 function Terminal:run(command)
     self:open()
-    api.nvim_chan_send(self.tjob_id, command)
+
+    local c = utils.build_cmd(command)
+    api.nvim_chan_send(self.tjob_id, c .. api.nvim_replace_termcodes('<CR>', true, true, true))
 
     return self
 end

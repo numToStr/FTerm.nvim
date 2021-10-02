@@ -49,4 +49,11 @@ function u.is_buf_valid(buf)
     return buf and vim.api.nvim_buf_is_loaded(buf)
 end
 
+function u.build_cmd(cmd)
+    if type(cmd) == 'table' then
+        return table.concat(cmd, ' ')
+    end
+    return cmd
+end
+
 return u

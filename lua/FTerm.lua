@@ -40,6 +40,10 @@ end
 ---Run a arbitrary command inside the default terminal
 ---@param cmd string
 function M.run(cmd)
+    if not cmd then
+        return vim.notify('FTerm: Please provide a command to run', vim.log.levels.ERROR)
+    end
+
     t:run(cmd)
 end
 
