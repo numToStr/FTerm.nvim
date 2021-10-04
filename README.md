@@ -2,7 +2,7 @@
 
 <h4 align='center'>🔥 No-nonsense floating terminal plugin for neovim 🔥</h4>
 
-![FTerm](https://user-images.githubusercontent.com/24727447/113905276-999bc580-97f0-11eb-9c01-347de0ff53c9.png "FTerm floating in the wind")
+![FTerm](https://user-images.githubusercontent.com/24727447/135801811-9e2787eb-e241-4ece-bfcf-6c79a90e6e97.png "Hello from fterm :)")
 
 ### Requirements
 
@@ -175,24 +175,25 @@ end
 
 Screenshot
 
-![gitui](https://user-images.githubusercontent.com/24727447/115375538-8541ca80-a1eb-11eb-90aa-b81803e591dc.png "gitui in a floating terminal")
+![gitui](https://user-images.githubusercontent.com/24727447/135801936-3519cd12-7924-4838-83d8-7c9fe6725f71.png "gitui w/ fterm")
 
--   Running [bpytop](https://github.com/aristocratos/bpytop)
+
+-   Running [btop](https://github.com/aristocratos/btop)
 
 ```lua
 local fterm = require("FTerm")
 
-local top = fterm:new({ cmd = "bpytop" })
+local btop = fterm:new({ cmd = "btop" })
 
- -- Use this to toggle bpytop in a floating terminal
-function _G.__fterm_top()
-    top:toggle()
+ -- Use this to toggle btop in a floating terminal
+function _G.__fterm_btop()
+    btop:toggle()
 end
 ```
 
 Screenshot
 
-![bpytop](https://user-images.githubusercontent.com/24727447/115376384-47917180-a1ec-11eb-9717-8dbf21465428.png "bpytop in floating terminal")
+![btop](https://user-images.githubusercontent.com/24727447/135802042-afe83ad0-e044-4ba6-bd19-0a75fdeff441.png "btop w/ fterm")
 
 ### Credits
 
