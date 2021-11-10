@@ -110,35 +110,31 @@ function Terminal:create_win(buf)
     return win
 end
 
+function Terminal:handle_exit(...)
+    if self.config.auto_close then
+        self:close(true)
+    end
+    if self.config.on_exit then
+        self.config.on_exit(...)
+    end
+end
+
 -- Terminal:term opens a terminal inside a buffer
-function Terminal:term()
+function Terminal:open_term()
     -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
     if not utils.is_buf_valid(self.buf) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        local pid = fn.termopen(self.config.cmd)
-
-        -- IDK what to do with this now, maybe later we can use it
-        self.terminal = pid
+        self.terminal = fn.termopen(self.config.cmd, {
+            on_stdout = self.config.on_stdout,
+            on_stderr = self.config.on_stderr,
+            on_exit = function(...)
+                self:handle_exit(...)
+            end,
+        })
 
         -- Explanation behind the `b.terminal_job_id`
         -- https://github.com/numToStr/FTerm.nvim/pull/27/files#r674020429
         self.tjob_id = vim.b.terminal_job_id
-
-        -- Only close the terminal buffer when `auto_close` is true
-        if self.config.auto_close then
-            -- Give every terminal instance their own key
-            local key = string.format('%p', self.config)
-
-            -- Need to setup different TermClose autocmd for different terminal instances
-            -- Otherwise this will be overriden by other terminal aka custom terminal
-            Terminal.au_close[key] = function()
-                self:close(true)
-            end
-
-            -- This fires when someone executes `exit` inside term
-            -- So, in this case the buffer should also be removed instead of reusing
-            cmd(string.format("autocmd! TermClose <buffer> lua require('FTerm.terminal').au_close['%s']()", key))
-        end
     end
 
     -- This prevents the filetype being changed to term instead of fterm when closing the floating window
@@ -162,7 +158,7 @@ function Terminal:open()
     local buf = self:create_buf()
     local win = self:create_win(buf)
 
-    self:term()
+    self:open_term()
 
     -- Need to store the handles after opening the terminal
     self:store(win, buf)

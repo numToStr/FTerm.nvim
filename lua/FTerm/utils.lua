@@ -18,6 +18,12 @@ u.defaults = {
         x = 0.5,
         y = 0.5,
     },
+    -- on-exit handler
+    on_exit = nil,
+    -- on-stdout handler
+    on_stdout = nil,
+    -- on-stderr handler
+    on_stderr = nil,
 }
 
 function u.build_dimensions(opts)
