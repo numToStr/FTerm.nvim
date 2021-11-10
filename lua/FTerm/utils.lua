@@ -18,11 +18,11 @@ u.defaults = {
         x = 0.5,
         y = 0.5,
     },
-    -- on-exit handler
+    -- Callback invoked when the terminal exits.
     on_exit = nil,
-    -- on-stdout handler
+    -- Callback invoked when the terminal emits stdout data.
     on_stdout = nil,
-    -- on-stderr handler
+    -- Callback invoked when the terminal emits stderr data.
     on_stderr = nil,
 }
 

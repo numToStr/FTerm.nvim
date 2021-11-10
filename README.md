@@ -73,6 +73,18 @@ Following options can be provided when calling `setup({config})`. Below is the d
         x = 0.5 -- X axis of the terminal window
         y = 0.5 -- Y axis of the terminal window
     }
+
+    -- Callback invoked when the terminal exits.
+    -- See `:h jobstart-options`
+    on_exit = nil,
+
+    -- Callback invoked when the terminal emits stdout data.
+    -- See `:h jobstart-options`
+    on_stdout = nil,
+
+    -- Callback invoked when the terminal emits stderr data.
+    -- See `:h jobstart-options`
+    on_stderr = nil,
 }
 ```
 
