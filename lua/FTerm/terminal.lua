@@ -6,9 +6,7 @@ local cmd = api.nvim_command
 
 local ft = 'FTerm'
 
-local Terminal = {
-    au_close = {},
-}
+local Terminal = {}
 
 -- Init
 function Terminal:new()
