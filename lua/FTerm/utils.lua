@@ -18,6 +18,12 @@ u.defaults = {
         x = 0.5,
         y = 0.5,
     },
+    -- Callback invoked when the terminal exits.
+    on_exit = nil,
+    -- Callback invoked when the terminal emits stdout data.
+    on_stdout = nil,
+    -- Callback invoked when the terminal emits stderr data.
+    on_stderr = nil,
 }
 
 function u.build_dimensions(opts)
