@@ -1,6 +1,8 @@
 local u = {}
 
 u.defaults = {
+    -- Filetype of the terminal buffer
+    ft = 'FTerm',
     -- Run the default shell in the terminal
     cmd = os.getenv('SHELL'),
     -- Neovim's native `nvim_open_win` border config

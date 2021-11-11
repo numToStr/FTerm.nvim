@@ -4,12 +4,10 @@ local api = vim.api
 local fn = vim.fn
 local cmd = api.nvim_command
 
-local ft = 'FTerm'
-
-local Terminal = {}
+local Term = {}
 
 -- Init
-function Terminal:new()
+function Term:new()
     local state = {
         win = nil,
         buf = nil,
@@ -23,7 +21,7 @@ function Terminal:new()
 end
 
 -- Terminal:setup overrides the terminal windows configuration ie. dimensions
-function Terminal:setup(cfg)
+function Term:setup(cfg)
     if not cfg then
         return vim.notify('FTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
     end
@@ -35,7 +33,7 @@ function Terminal:setup(cfg)
 end
 
 -- Terminal:store adds the given floating windows and buffer to the list
-function Terminal:store(win, buf)
+function Term:store(win, buf)
     self.win = win
     self.buf = buf
 
@@ -43,7 +41,7 @@ function Terminal:store(win, buf)
 end
 
 -- Terminal:remember_cursor stores the last cursor position and window
-function Terminal:remember_cursor()
+function Term:remember_cursor()
     self.last_win = api.nvim_get_current_win()
     self.prev_win = fn.winnr('#')
     self.last_pos = api.nvim_win_get_cursor(self.last_win)
@@ -52,7 +50,7 @@ function Terminal:remember_cursor()
 end
 
 -- Terminal:restore_cursor restores the cursor to the last remembered position
-function Terminal:restore_cursor()
+function Term:restore_cursor()
     if self.last_win and self.last_pos ~= nil then
         if self.prev_win > 0 then
             cmd('silent! ' .. self.prev_win .. 'wincmd w')
@@ -70,7 +68,7 @@ function Terminal:restore_cursor()
 end
 
 -- Terminal:create_buf creates a scratch buffer for floating window to consume
-function Terminal:create_buf()
+function Term:create_buf()
     -- If previous buffer exists then return it
     local prev = self.buf
 
@@ -81,13 +79,13 @@ function Terminal:create_buf()
     local buf = api.nvim_create_buf(false, true)
 
     -- this ensures filetype is set to Fterm on first run
-    api.nvim_buf_set_option(buf, 'filetype', ft)
+    api.nvim_buf_set_option(buf, 'filetype', self.config.ft)
 
     return buf
 end
 
 -- Terminal:create_win creates a new window with a given buffer
-function Terminal:create_win(buf)
+function Term:create_win(buf)
     local cfg = self.config
 
     local dim = utils.build_dimensions(cfg.dimensions)
@@ -108,7 +106,7 @@ function Terminal:create_win(buf)
     return win
 end
 
-function Terminal:handle_exit(...)
+function Term:handle_exit(...)
     if self.config.auto_close then
         self:close(true)
     end
@@ -118,7 +116,7 @@ function Terminal:handle_exit(...)
 end
 
 -- Terminal:term opens a terminal inside a buffer
-function Terminal:open_term()
+function Term:open_term()
     -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
     if not utils.is_buf_valid(self.buf) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
@@ -136,7 +134,7 @@ function Terminal:open_term()
     end
 
     -- This prevents the filetype being changed to term instead of fterm when closing the floating window
-    api.nvim_buf_set_option(self.buf, 'filetype', ft)
+    api.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
 
     cmd('startinsert')
 
@@ -144,7 +142,7 @@ function Terminal:open_term()
 end
 
 -- Terminal:open does all the magic of opening terminal
-function Terminal:open()
+function Term:open()
     -- Move to existing window if the window already exists
     if utils.is_win_valid(self.win) then
         return api.nvim_set_current_win(self.win)
@@ -165,7 +163,7 @@ function Terminal:open()
 end
 
 -- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
-function Terminal:close(force)
+function Term:close(force)
     if not self.win then
         return
     end
@@ -194,7 +192,7 @@ function Terminal:close(force)
 end
 
 -- Terminal:toggle is used to toggle the terminal window
-function Terminal:toggle()
+function Term:toggle()
     -- If window is stored and valid then it is already opened, then close it
     if utils.is_win_valid(self.win) then
         self:close()
@@ -206,7 +204,7 @@ function Terminal:toggle()
 end
 
 -- Terminal:run is used to (open and) run commands to terminal window
-function Terminal:run(command)
+function Term:run(command)
     self:open()
 
     local c = utils.build_cmd(command)
@@ -215,4 +213,4 @@ function Terminal:run(command)
     return self
 end
 
-return Terminal
+return Term

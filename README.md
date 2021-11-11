@@ -49,6 +49,9 @@ Following options can be provided when calling `setup({config})`. Below is the d
 
 ```lua
 {
+    -- Filetype of the terminal buffer
+    ft = 'FTerm',
+
     -- Command to run inside the terminal. It could be a `string` or `table`
     cmd = os.getenv('SHELL'),
 
@@ -172,6 +175,7 @@ Below are some examples:
 local fterm = require("FTerm")
 
 local gitui = fterm:new({
+    ft = 'fterm_gitui', -- You can also override the default filetype, if you want
     cmd = "gitui",
     dimensions = {
         height = 0.9,
@@ -189,13 +193,15 @@ Screenshot
 
 ![gitui](https://user-images.githubusercontent.com/24727447/135801936-3519cd12-7924-4838-83d8-7c9fe6725f71.png "gitui w/ fterm")
 
-
 -   Running [btop](https://github.com/aristocratos/btop)
 
 ```lua
 local fterm = require("FTerm")
 
-local btop = fterm:new({ cmd = "btop" })
+local btop = fterm:new({
+    ft = 'fterm_btop',
+    cmd = "btop"
+})
 
  -- Use this to toggle btop in a floating terminal
 function _G.__fterm_btop()
