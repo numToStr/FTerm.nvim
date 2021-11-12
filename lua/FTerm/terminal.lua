@@ -89,7 +89,7 @@ end
 function Term:create_win(buf)
     local cfg = self.config
 
-    local dim = U.build_dimensions(cfg.dimensions)
+    local dim = U.get_dimension(cfg.dimensions)
 
     local win = A.nvim_open_win(buf, true, {
         border = cfg.border,

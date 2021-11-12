@@ -1,5 +1,7 @@
 local U = {}
 
+---@alias Command string|string[]
+
 ---@class Dimensions - Every field inside the dimensions should be b/w `0` to `1`
 ---@field height number: Height of the floating window (default: `0.8`)
 ---@field width number: Width of the floating window (default: `0.8`)
@@ -8,7 +10,7 @@ local U = {}
 
 ---@class Config
 ---@field ft string: Filetype of the terminal buffer (default: `FTerm`)
----@field cmd string|string[]: Command to run inside the terminal (default: `os.getenv('SHELL'`))
+---@field cmd Command: Command to run inside the terminal (default: `os.getenv('SHELL'`))
 ---@field border string: Border type for the floating window. See `:h nvim_open_win` (default: `single`)
 ---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
 ---@field hl string: Highlight group for the terminal buffer (default: `true`)
@@ -34,7 +36,10 @@ U.defaults = {
     },
 }
 
-function U.build_dimensions(opts)
+---Create terminal dimension relative to the viewport
+---@param opts Dimensions
+---@return table
+function U.get_dimension(opts)
     -- get lines and columns
     local cl = vim.o.columns
     local ln = vim.o.lines
@@ -55,19 +60,25 @@ function U.build_dimensions(opts)
     }
 end
 
+---Check whether the window is valid
+---@param win number Window ID
+---@return boolean
 function U.is_win_valid(win)
     return win and vim.api.nvim_win_is_valid(win)
 end
 
+---Check whether the buffer is valid
+---@param buf number Buffer ID
+---@return boolean
 function U.is_buf_valid(buf)
     return buf and vim.api.nvim_buf_is_loaded(buf)
 end
 
+---Creates a valid command from user's input
+---@param cmd Command
+---@return string
 function U.build_cmd(cmd)
-    if type(cmd) == 'table' then
-        return table.concat(cmd, ' ')
-    end
-    return cmd
+    return type(cmd) == 'table' and table.concat(cmd, ' ') or cmd
 end
 
 return U
