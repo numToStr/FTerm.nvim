@@ -1,34 +1,40 @@
-local u = {}
+local U = {}
 
-u.defaults = {
-    -- Filetype of the terminal buffer
+---@class Dimensions - Every field inside the dimensions should be b/w `0` to `1`
+---@field height number: Height of the floating window (default: `0.8`)
+---@field width number: Width of the floating window (default: `0.8`)
+---@field x number: X-Axis of the floating window (default: `0.5`)
+---@field y number: Y-Axis of the floating window (default: `0.5`)
+
+---@class Config
+---@field ft string: Filetype of the terminal buffer (default: `FTerm`)
+---@field cmd string|string[]: Command to run inside the terminal (default: `os.getenv('SHELL'`))
+---@field border string: Border type for the floating window. See `:h nvim_open_win` (default: `single`)
+---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
+---@field hl string: Highlight group for the terminal buffer (default: `true`)
+---@field blend number: Transparency of the floating window (default: `true`)
+---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
+---@field on_stdout function: Callback invoked when the terminal emits stdout data (default: `nil`)
+---@field on_stderr function: Callback invoked when the terminal emits stderr data (default: `nil`)
+---@field dimensions Dimensions: Dimensions of the floating window
+
+---@type Config
+U.defaults = {
     ft = 'FTerm',
-    -- Run the default shell in the terminal
     cmd = os.getenv('SHELL'),
-    -- Neovim's native `nvim_open_win` border config
     border = 'single',
-    -- Close the terminal as soon as shell/command exits
     auto_close = true,
-    -- Highlight group for the terminal
     hl = 'Normal',
-    -- Transparency of the window
     blend = 0,
-    -- Dimensions are treated as percentage
     dimensions = {
         height = 0.8,
         width = 0.8,
         x = 0.5,
         y = 0.5,
     },
-    -- Callback invoked when the terminal exits.
-    on_exit = nil,
-    -- Callback invoked when the terminal emits stdout data.
-    on_stdout = nil,
-    -- Callback invoked when the terminal emits stderr data.
-    on_stderr = nil,
 }
 
-function u.build_dimensions(opts)
+function U.build_dimensions(opts)
     -- get lines and columns
     local cl = vim.o.columns
     local ln = vim.o.lines
@@ -49,19 +55,19 @@ function u.build_dimensions(opts)
     }
 end
 
-function u.is_win_valid(win)
+function U.is_win_valid(win)
     return win and vim.api.nvim_win_is_valid(win)
 end
 
-function u.is_buf_valid(buf)
+function U.is_buf_valid(buf)
     return buf and vim.api.nvim_buf_is_loaded(buf)
 end
 
-function u.build_cmd(cmd)
+function U.build_cmd(cmd)
     if type(cmd) == 'table' then
         return table.concat(cmd, ' ')
     end
     return cmd
 end
 
-return u
+return U

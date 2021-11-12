@@ -1,9 +1,11 @@
-local utils = require('FTerm.utils')
+local U = require('FTerm.utils')
 
-local api = vim.api
+local A = vim.api
 local fn = vim.fn
-local cmd = api.nvim_command
+local cmd = A.nvim_command
 
+---@class Term
+---@field config Config
 local Term = {}
 
 -- Init
@@ -13,11 +15,10 @@ function Term:new()
         buf = nil,
         terminal = nil,
         tjob_id = nil,
-        config = utils.defaults,
+        config = U.defaults,
     }
 
-    self.__index = self
-    return setmetatable(state, self)
+    return setmetatable(state, { __index = self })
 end
 
 -- Terminal:setup overrides the terminal windows configuration ie. dimensions
@@ -27,7 +28,7 @@ function Term:setup(cfg)
     end
 
     self.config = vim.tbl_deep_extend('force', self.config, cfg)
-    self.config.cmd = utils.build_cmd(self.config.cmd)
+    self.config.cmd = U.build_cmd(self.config.cmd)
 
     return self
 end
@@ -42,9 +43,9 @@ end
 
 -- Terminal:remember_cursor stores the last cursor position and window
 function Term:remember_cursor()
-    self.last_win = api.nvim_get_current_win()
+    self.last_win = A.nvim_get_current_win()
     self.prev_win = fn.winnr('#')
-    self.last_pos = api.nvim_win_get_cursor(self.last_win)
+    self.last_pos = A.nvim_win_get_cursor(self.last_win)
 
     return self
 end
@@ -56,8 +57,8 @@ function Term:restore_cursor()
             cmd('silent! ' .. self.prev_win .. 'wincmd w')
         end
 
-        api.nvim_set_current_win(self.last_win)
-        api.nvim_win_set_cursor(self.last_win, self.last_pos)
+        A.nvim_set_current_win(self.last_win)
+        A.nvim_win_set_cursor(self.last_win, self.last_pos)
 
         self.last_win = nil
         self.prev_win = nil
@@ -72,14 +73,14 @@ function Term:create_buf()
     -- If previous buffer exists then return it
     local prev = self.buf
 
-    if utils.is_buf_valid(prev) then
+    if U.is_buf_valid(prev) then
         return prev
     end
 
-    local buf = api.nvim_create_buf(false, true)
+    local buf = A.nvim_create_buf(false, true)
 
     -- this ensures filetype is set to Fterm on first run
-    api.nvim_buf_set_option(buf, 'filetype', self.config.ft)
+    A.nvim_buf_set_option(buf, 'filetype', self.config.ft)
 
     return buf
 end
@@ -88,9 +89,9 @@ end
 function Term:create_win(buf)
     local cfg = self.config
 
-    local dim = utils.build_dimensions(cfg.dimensions)
+    local dim = U.build_dimensions(cfg.dimensions)
 
-    local win = api.nvim_open_win(buf, true, {
+    local win = A.nvim_open_win(buf, true, {
         border = cfg.border,
         relative = 'editor',
         style = 'minimal',
@@ -100,8 +101,8 @@ function Term:create_win(buf)
         row = dim.row,
     })
 
-    api.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.hl)
-    api.nvim_win_set_option(win, 'winblend', cfg.blend)
+    A.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.hl)
+    A.nvim_win_set_option(win, 'winblend', cfg.blend)
 
     return win
 end
@@ -118,7 +119,7 @@ end
 -- Terminal:term opens a terminal inside a buffer
 function Term:open_term()
     -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
-    if not utils.is_buf_valid(self.buf) then
+    if not U.is_buf_valid(self.buf) then
         -- This function fails if the current buffer is modified (all buffer contents are destroyed).
         self.terminal = fn.termopen(self.config.cmd, {
             on_stdout = self.config.on_stdout,
@@ -134,7 +135,7 @@ function Term:open_term()
     end
 
     -- This prevents the filetype being changed to term instead of fterm when closing the floating window
-    api.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
+    A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
 
     cmd('startinsert')
 
@@ -144,8 +145,8 @@ end
 -- Terminal:open does all the magic of opening terminal
 function Term:open()
     -- Move to existing window if the window already exists
-    if utils.is_win_valid(self.win) then
-        return api.nvim_set_current_win(self.win)
+    if U.is_win_valid(self.win) then
+        return A.nvim_set_current_win(self.win)
     end
 
     -- Create new window and terminal if it doesn't exist
@@ -168,15 +169,15 @@ function Term:close(force)
         return
     end
 
-    if utils.is_win_valid(self.win) then
-        api.nvim_win_close(self.win, {})
+    if U.is_win_valid(self.win) then
+        A.nvim_win_close(self.win, {})
     end
 
     self.win = nil
 
     if force then
-        if utils.is_buf_valid(self.buf) then
-            api.nvim_buf_delete(self.buf, { force = true })
+        if U.is_buf_valid(self.buf) then
+            A.nvim_buf_delete(self.buf, { force = true })
         end
 
         fn.jobstop(self.terminal)
@@ -194,7 +195,7 @@ end
 -- Terminal:toggle is used to toggle the terminal window
 function Term:toggle()
     -- If window is stored and valid then it is already opened, then close it
-    if utils.is_win_valid(self.win) then
+    if U.is_win_valid(self.win) then
         self:close()
     else
         self:open()
@@ -207,8 +208,8 @@ end
 function Term:run(command)
     self:open()
 
-    local c = utils.build_cmd(command)
-    api.nvim_chan_send(self.tjob_id, c .. api.nvim_replace_termcodes('<CR>', true, true, true))
+    local c = U.build_cmd(command)
+    A.nvim_chan_send(self.tjob_id, c .. A.nvim_replace_termcodes('<CR>', true, true, true))
 
     return self
 end
