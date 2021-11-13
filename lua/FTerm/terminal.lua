@@ -8,6 +8,8 @@ local cmd = A.nvim_command
 ---@alias BufId number Terminal Buffer's ID
 
 ---@class Term
+---@field win WinId
+---@field buf BufId
 ---@field config Config
 local Term = {}
 
