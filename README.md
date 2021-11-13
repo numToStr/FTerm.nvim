@@ -1,28 +1,25 @@
 <h1 align='center'>FTerm.nvim</h1>
-
-<h4 align='center'>🔥 No-nonsense floating terminal plugin for neovim 🔥</h4>
+<p align="center"><sup>🔥 No-nonsense floating terminal plugin for neovim 🔥</sup></p>
 
 ![FTerm](https://user-images.githubusercontent.com/24727447/135801811-9e2787eb-e241-4ece-bfcf-6c79a90e6e97.png "Hello from fterm :)")
 
-### Requirements
-
--   Neovim 0.5
-
-### Install
+### 🚀 Installation
 
 -   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
-use "numtostr/FTerm.nvim"
+use "numToStr/FTerm.nvim"
 ```
 
 -   With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
-Plug 'numtostr/FTerm.nvim'
+Plug 'numToStr/FTerm.nvim'
 ```
 
-### Setup (optional)
+<a id="setup"></a>
+
+### ⚒️ Setup (optional)
 
 `FTerm` default terminal has sane defaults. If you want to use the default configuration then you don't have to do anything but you can override the default configuration by calling `setup()`.
 
@@ -45,7 +42,7 @@ map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
 
 #### Configuration
 
-Following options can be provided when calling `setup({config})`. Below is the default configuration:
+Following options can be provided when calling [`setup()`](#setup). Below is the **default** configuration:
 
 ```lua
 {
@@ -91,7 +88,7 @@ Following options can be provided when calling `setup({config})`. Below is the d
 }
 ```
 
-### Usage
+### 🔥 Usage
 
 -   Opening the terminal
 
@@ -150,7 +147,9 @@ vim.cmd('command! ManLs lua require("FTerm").run("man ls")')
 vim.cmd('command! YarnBuild lua require("FTerm").run({"yarn", "build"})')
 ```
 
-### Scratch Terminal
+<a id="scratch-terminal"></a>
+
+### ⚡ Scratch Terminal
 
 You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses [custom terminal](#custom-terminal) under the hood.
 
@@ -163,7 +162,9 @@ vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })
 vim.cmd('command! CargoBuild lua require("FTerm").scratch({ cmd = {"cargo", "build", "--target", os.getenv("RUST_TARGET")} })')
 ```
 
-### Custom Terminal
+<a id="custom-terminal"></a>
+
+### ✨ Custom Terminal
 
 By default `FTerm` only creates and manage one terminal instance but you can create your terminal by using the `FTerm:new()` function and overriding the default command. This is useful if you want a separate terminal and the command you want to run is a long-running process. If not, see [scratch terminal](#scratch-terminal).
 
@@ -213,6 +214,6 @@ Screenshot
 
 ![btop](https://user-images.githubusercontent.com/24727447/135802042-afe83ad0-e044-4ba6-bd19-0a75fdeff441.png "btop w/ fterm")
 
-### Credits
+### 💐 Credits
 
-[vim-floaterm](https://github.com/voldikss/vim-floaterm) for the inspiration
+-   [vim-floaterm](https://github.com/voldikss/vim-floaterm) for the inspiration
