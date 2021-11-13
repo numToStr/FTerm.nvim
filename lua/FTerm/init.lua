@@ -1,18 +1,18 @@
 local Term = require('FTerm.terminal')
 
-local t = Term:new()
-
 local M = {}
 
----To create a custom terminal by overriding the default command
----@param cfg table
----@return table
+local t = Term:new()
+
+---Creates a custom terminal
+---@param cfg Config
+---@return Term
 function M:new(cfg)
     return Term:new():setup(cfg)
 end
 
----(optional) Configure the default terminal
----@param cfg table
+---(Optional) Configure the default terminal
+---@param cfg Config
 function M.setup(cfg)
     t:setup(cfg)
 end
@@ -38,7 +38,7 @@ function M.toggle()
 end
 
 ---Run a arbitrary command inside the default terminal
----@param cmd string
+---@param cmd Command
 function M.run(cmd)
     if not cmd then
         return vim.notify('FTerm: Please provide a command to run', vim.log.levels.ERROR)
@@ -48,7 +48,7 @@ function M.run(cmd)
 end
 
 ---To create a scratch (use and throw) terminal. Like those good ol' C++ build terminal.
----@param cfg table
+---@param cfg Command
 function M.scratch(cfg)
     if not cfg then
         return vim.notify('FTerm: Please provide configuration for scratch terminal', vim.log.levels.ERROR)
