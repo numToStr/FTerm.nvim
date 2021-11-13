@@ -4,11 +4,14 @@ local A = vim.api
 local fn = vim.fn
 local cmd = A.nvim_command
 
+---@alias WinId number Floating Window's ID
+---@alias BufId number Terminal Buffer's ID
+
 ---@class Term
 ---@field config Config
 local Term = {}
 
--- Init
+---Term:new creates a new terminal instance
 function Term:new()
     local state = {
         win = nil,
@@ -21,7 +24,9 @@ function Term:new()
     return setmetatable(state, { __index = self })
 end
 
--- Terminal:setup overrides the terminal windows configuration ie. dimensions
+---Term:setup overrides the terminal windows configuration ie. dimensions
+---@param cfg Config
+---@return Term
 function Term:setup(cfg)
     if not cfg then
         return vim.notify('FTerm: setup() is optional. Please remove it!', vim.log.levels.WARN)
@@ -33,7 +38,10 @@ function Term:setup(cfg)
     return self
 end
 
--- Terminal:store adds the given floating windows and buffer to the list
+---Term:store adds the given floating windows and buffer to the list
+---@param win WinId
+---@param buf BufId
+---@return Term
 function Term:store(win, buf)
     self.win = win
     self.buf = buf
@@ -41,7 +49,8 @@ function Term:store(win, buf)
     return self
 end
 
--- Terminal:remember_cursor stores the last cursor position and window
+---Term:remember_cursor stores the last cursor position and window
+---@return Term
 function Term:remember_cursor()
     self.last_win = A.nvim_get_current_win()
     self.prev_win = fn.winnr('#')
@@ -50,7 +59,8 @@ function Term:remember_cursor()
     return self
 end
 
--- Terminal:restore_cursor restores the cursor to the last remembered position
+---Term:restore_cursor restores the cursor to the last remembered position
+---@return Term
 function Term:restore_cursor()
     if self.last_win and self.last_pos ~= nil then
         if self.prev_win > 0 then
@@ -68,7 +78,8 @@ function Term:restore_cursor()
     return self
 end
 
--- Terminal:create_buf creates a scratch buffer for floating window to consume
+---Term:create_buf creates a scratch buffer for floating window to consume
+---@return BufId
 function Term:create_buf()
     -- If previous buffer exists then return it
     local prev = self.buf
@@ -85,7 +96,9 @@ function Term:create_buf()
     return buf
 end
 
--- Terminal:create_win creates a new window with a given buffer
+---Term:create_win creates a new window with a given buffer
+---@param buf BufId
+---@return WinId
 function Term:create_win(buf)
     local cfg = self.config
 
@@ -107,6 +120,8 @@ function Term:create_win(buf)
     return win
 end
 
+---Term:handle_exit gracefully closed/kills the terminal
+---@private
 function Term:handle_exit(...)
     if self.config.auto_close then
         self:close(true)
@@ -116,7 +131,8 @@ function Term:handle_exit(...)
     end
 end
 
--- Terminal:term opens a terminal inside a buffer
+---Term:term opens a terminal inside a buffer
+---@return Term
 function Term:open_term()
     -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
     if not U.is_buf_valid(self.buf) then
@@ -142,7 +158,8 @@ function Term:open_term()
     return self
 end
 
--- Terminal:open does all the magic of opening terminal
+---Term:open does all the magic of opening terminal
+---@return Term
 function Term:open()
     -- Move to existing window if the window already exists
     if U.is_win_valid(self.win) then
@@ -155,15 +172,15 @@ function Term:open()
     local buf = self:create_buf()
     local win = self:create_win(buf)
 
-    self:open_term()
-
     -- Need to store the handles after opening the terminal
-    self:store(win, buf)
+    self:open_term():store(win, buf)
 
     return self
 end
 
--- Terminal:close does all the magic of closing terminal and clearing the buffers/windows
+---Term:close does all the magic of closing terminal and clearing the buffers/windows
+---@param force boolean If true, kill the terminal otherwise hide it
+---@return Term
 function Term:close(force)
     if not self.win then
         return
@@ -192,7 +209,8 @@ function Term:close(force)
     return self
 end
 
--- Terminal:toggle is used to toggle the terminal window
+---Term:toggle is used to toggle the terminal window
+---@return Term
 function Term:toggle()
     -- If window is stored and valid then it is already opened, then close it
     if U.is_win_valid(self.win) then
@@ -204,7 +222,9 @@ function Term:toggle()
     return self
 end
 
--- Terminal:run is used to (open and) run commands to terminal window
+---Term:run is used to (open and) run commands to terminal window
+---@param command Command
+---@return Term
 function Term:run(command)
     self:open()
 
