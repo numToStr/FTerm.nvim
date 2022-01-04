@@ -153,7 +153,9 @@ function Term:open_term()
     end
 
     -- This prevents the filetype being changed to term instead of fterm when closing the floating window
-    A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
+    if self.buf then
+      A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
+    end
 
     cmd('startinsert')
 
