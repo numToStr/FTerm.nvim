@@ -7,12 +7,15 @@ local U = {}
 ---@field width number: Width of the floating window (default: `0.8`)
 ---@field x number: X-Axis of the floating window (default: `0.5`)
 ---@field y number: Y-Axis of the floating window (default: `0.5`)
+---@field col number: Specify the exact col for opening the window. See `:h nvim_open_win` for details. If provided, this will mean the `x` option is ignored.
+---@field row number: Specify the exact row for opening the window. See `:h nvim_open_win` for details. If provided, this will mean the `y` option is ignored.
 
 ---@class Config
 ---@field ft string: Filetype of the terminal buffer (default: `FTerm`)
 ---@field cmd Command: Command to run inside the terminal (default: `os.getenv('SHELL'`))
 ---@field border string: Border type for the floating window. See `:h nvim_open_win` (default: `single`)
 ---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
+---@field anchor string: Where to anchor the floating terminal to. See `:h nvim_open_win` (default: `NW`)
 ---@field hl string: Highlight group for the terminal buffer (default: `true`)
 ---@field blend number: Transparency of the floating window (default: `true`)
 ---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
@@ -28,11 +31,14 @@ U.defaults = {
     auto_close = true,
     hl = 'Normal',
     blend = 0,
+    anchor = 'NW',
     dimensions = {
         height = 0.8,
         width = 0.8,
         x = 0.5,
         y = 0.5,
+        col = nil,
+        row = nil,
     },
 }
 
@@ -49,8 +55,8 @@ function U.get_dimension(opts)
     local height = math.ceil(ln * opts.height - 4)
 
     -- and its starting position
-    local col = math.ceil((cl - width) * opts.x)
-    local row = math.ceil((ln - height) * opts.y - 1)
+    local col = opts.col or math.ceil((cl - width) * opts.x)
+    local row = opts.row or math.ceil((ln - height) * opts.y - 1)
 
     return {
         width = width,
