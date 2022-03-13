@@ -10,20 +10,18 @@ local cmd = A.nvim_command
 ---@class Term
 ---@field win WinId
 ---@field buf BufId
+---@field terminal number Terminal's job id
 ---@field config Config
 local Term = {}
 
 ---Term:new creates a new terminal instance
 function Term:new()
-    local state = {
+    return setmetatable({
         win = nil,
         buf = nil,
         terminal = nil,
-        tjob_id = nil,
         config = U.defaults,
-    }
-
-    return setmetatable(state, { __index = self })
+    }, { __index = self })
 end
 
 ---Term:setup overrides the terminal windows configuration ie. dimensions
@@ -66,7 +64,7 @@ end
 function Term:restore_cursor()
     if self.last_win and self.last_pos ~= nil then
         if self.prev_win > 0 then
-            cmd('silent! ' .. self.prev_win .. 'wincmd w')
+            cmd(('silent! %s wincmd w'):format(self.prev_win))
         end
 
         A.nvim_set_current_win(self.last_win)
@@ -116,7 +114,7 @@ function Term:create_win(buf)
         row = dim.row,
     })
 
-    A.nvim_win_set_option(win, 'winhl', 'Normal:' .. cfg.hl)
+    A.nvim_win_set_option(win, 'winhl', ('Normal:%s'):format(cfg.hl))
     A.nvim_win_set_option(win, 'winblend', cfg.blend)
 
     return win
@@ -133,33 +131,29 @@ function Term:handle_exit(...)
     end
 end
 
+---Term:prompt enters into prompt
+---@return Term
+function Term:prompt()
+    cmd('startinsert')
+    return self
+end
+
 ---Term:term opens a terminal inside a buffer
 ---@return Term
 function Term:open_term()
-    -- NOTE: we are storing window and buffer after opening terminal bcz of this `self.buf` will be `nil` initially
-    if not U.is_buf_valid(self.buf) then
-        -- This function fails if the current buffer is modified (all buffer contents are destroyed).
-        self.terminal = fn.termopen(self.config.cmd, {
-            on_stdout = self.config.on_stdout,
-            on_stderr = self.config.on_stderr,
-            on_exit = function(...)
-                self:handle_exit(...)
-            end,
-        })
+    -- NOTE: `termopen` will fails if the current buffer is modified
+    self.terminal = fn.termopen(self.config.cmd, {
+        on_stdout = self.config.on_stdout,
+        on_stderr = self.config.on_stderr,
+        on_exit = function(...)
+            self:handle_exit(...)
+        end,
+    })
 
-        -- Explanation behind the `b.terminal_job_id`
-        -- https://github.com/numToStr/FTerm.nvim/pull/27/files#r674020429
-        self.tjob_id = vim.b.terminal_job_id
-    end
+    -- This prevents the filetype being changed to `term` instead of `FTerm` when closing the floating window
+    A.nvim_buf_set_option(self.buf, 'filetype', 'FTerm')
 
-    -- This prevents the filetype being changed to term instead of fterm when closing the floating window
-    if self.buf then
-      A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
-    end
-
-    cmd('startinsert')
-
-    return self
+    return self:prompt()
 end
 
 ---Term:open does all the magic of opening terminal
@@ -170,29 +164,30 @@ function Term:open()
         return A.nvim_set_current_win(self.win)
     end
 
-    -- Create new window and terminal if it doesn't exist
     self:remember_cursor()
 
+    -- Create new window and terminal if it doesn't exist
     local buf = self:create_buf()
     local win = self:create_win(buf)
 
-    -- Need to store the handles after opening the terminal
-    self:open_term():store(win, buf)
+    -- This means we are just toggling the terminal
+    -- So we don't have to call `:open_term()`
+    if self.buf == buf then
+        return self:store(win, buf):prompt()
+    end
 
-    return self
+    return self:store(win, buf):open_term()
 end
 
 ---Term:close does all the magic of closing terminal and clearing the buffers/windows
 ---@param force boolean If true, kill the terminal otherwise hide it
 ---@return Term
 function Term:close(force)
-    if not self.win then
-        return
+    if not U.is_win_valid(self.win) then
+        return self
     end
 
-    if U.is_win_valid(self.win) then
-        A.nvim_win_close(self.win, {})
-    end
+    A.nvim_win_close(self.win, {})
 
     self.win = nil
 
@@ -205,7 +200,6 @@ function Term:close(force)
 
         self.buf = nil
         self.terminal = nil
-        self.tjob_id = nil
     end
 
     self:restore_cursor()
@@ -232,8 +226,7 @@ end
 function Term:run(command)
     self:open()
 
-    local c = U.build_cmd(command)
-    A.nvim_chan_send(self.tjob_id, c .. A.nvim_replace_termcodes('<CR>', true, true, true))
+    A.nvim_chan_send(self.terminal, U.build_cmd(command) .. A.nvim_replace_termcodes('<CR>', true, true, true))
 
     return self
 end
