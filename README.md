@@ -5,13 +5,13 @@
 
 ### 🚀 Installation
 
--   With [packer.nvim](https://github.com/wbthomason/packer.nvim)
+- With [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use "numToStr/FTerm.nvim"
 ```
 
--   With [vim-plug](https://github.com/junegunn/vim-plug)
+- With [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'numToStr/FTerm.nvim'
@@ -33,11 +33,8 @@ require'FTerm'.setup({
 })
 
 -- Example keybindings
-local map = vim.api.nvim_set_keymap
-local opts = { noremap = true, silent = true }
-
-map('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>', opts)
-map('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>', opts)
+vim.keymap.set('n', '<A-i>', '<CMD>lua require("FTerm").toggle()<CR>')
+vim.keymap.set('t', '<A-i>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 ```
 
 #### Configuration
@@ -90,61 +87,64 @@ Following options can be provided when calling [`setup()`](#setup). Below is the
 
 ### 🔥 Usage
 
--   Opening the terminal
+- Opening the terminal
 
 ```lua
-lua require('FTerm').open()
+require('FTerm').open()
 
 -- or create a vim command
-vim.cmd('command! FTermOpen lua require("FTerm").open()')
+vim.api.nvim_add_user_command('FTermOpen', require('FTerm').open, { bang = true })
 ```
 
--   Closing the terminal
+- Closing the terminal
 
 > This will close the terminal window but preserves the actual terminal session
 
 ```lua
-lua require('FTerm').close()
+require('FTerm').close()
 
 -- or create a vim command
-vim.cmd('command! FTermClose lua require("FTerm").close()')
+vim.api.nvim_add_user_command('FTermClose', require('FTerm').close, { bang = true })
 ```
 
--   Exiting the terminal
+- Exiting the terminal
 
 > Unlike closing, this will remove the terminal session
 
 ```lua
-lua require('FTerm').exit()
+require('FTerm').exit()
 
 -- or create a vim command
-vim.cmd('command! FTermExit lua require("FTerm").exit()')
+vim.api.nvim_add_user_command('FTermExit', require('FTerm').exit, { bang = true })
 ```
 
--   Toggling the terminal
+- Toggling the terminal
 
 ```lua
-lua require('FTerm').toggle()
+require('FTerm').toggle()
 
 -- or create a vim command
-vim.cmd('command! FTermClose lua require("FTerm").toggle()')
+vim.api.nvim_add_user_command('FTermToggle', require('FTerm').toggle, { bang = true })
 ```
 
--   Running commands
+- Running commands
 
 If you want to run some commands, you can do that by using the `run` method. This method uses the default terminal and doesn't override the default command (which is usually your shell). Because of this when the command finishes/exits, the terminal won't close automatically.
 
-> NOTE: There is no need to add `\n` at the end of the command
-
 ```lua
 -- run() can take `string` or `table` just like `cmd` config
-lua require('FTerm').run('man ls') -- with string
-lua require('FTerm').run({'yarn', 'build'})
-lua require('FTerm').run({'node', vim.api.nvim_get_current_buf()})
+require('FTerm').run('man ls') -- with string
+require('FTerm').run({'yarn', 'build'})
+require('FTerm').run({'node', vim.api.nvim_get_current_buf()})
 
 -- Or you can do this
-vim.cmd('command! ManLs lua require("FTerm").run("man ls")')
-vim.cmd('command! YarnBuild lua require("FTerm").run({"yarn", "build"})')
+vim.api.nvim_add_user_command('ManLs', function()
+    require('FTerm').run('man ls')
+end, { bang = true })
+
+vim.api.nvim_add_user_command('YarnBuild', function()
+    require('FTerm').run({'yarn', 'build'})
+end, { bang = true })
 ```
 
 <a id="scratch-terminal"></a>
@@ -154,12 +154,17 @@ vim.cmd('command! YarnBuild lua require("FTerm").run({"yarn", "build"})')
 You can also create scratch terminal for ephemeral processes like build commands. Scratch terminal will be created when you can invoke it and will be destroyed when the command exits. You can use the `scratch({config})` method to create it which takes [same options](#configuration) as `setup()`. This uses [custom terminal](#custom-terminal) under the hood.
 
 ```lua
-lua require('FTerm').scratch({ cmd = 'yarn build' })
-lua require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv('RUST_TARGET')} })
+require('FTerm').scratch({ cmd = 'yarn build' })
+require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv('RUST_TARGET')} })
 
 -- Scratch terminals are awesome because you can do this
-vim.cmd('command! YarnBuild lua require("FTerm").scratch({ cmd = "yarn build" })')
-vim.cmd('command! CargoBuild lua require("FTerm").scratch({ cmd = {"cargo", "build", "--target", os.getenv("RUST_TARGET")} })')
+vim.api.nvim_add_user_command('YarnBuild', function()
+    require('FTerm').scratch({ cmd = {'yarn', 'build'} })
+end, { bang = true })
+
+vim.api.nvim_add_user_command('CargoBuild', function()
+    require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv("RUST_TARGET")} })
+end, { bang = true })
 ```
 
 <a id="custom-terminal"></a>
@@ -170,7 +175,7 @@ By default `FTerm` only creates and manage one terminal instance but you can cre
 
 Below are some examples:
 
--   Running [gitui](https://github.com/extrawurst/gitui)
+- Running [gitui](https://github.com/extrawurst/gitui)
 
 ```lua
 local fterm = require("FTerm")
@@ -194,7 +199,7 @@ Screenshot
 
 ![gitui](https://user-images.githubusercontent.com/24727447/135801936-3519cd12-7924-4838-83d8-7c9fe6725f71.png "gitui w/ fterm")
 
--   Running [btop](https://github.com/aristocratos/btop)
+- Running [btop](https://github.com/aristocratos/btop)
 
 ```lua
 local fterm = require("FTerm")
@@ -216,4 +221,4 @@ Screenshot
 
 ### 💐 Credits
 
--   [vim-floaterm](https://github.com/voldikss/vim-floaterm) for the inspiration
+- [vim-floaterm](https://github.com/voldikss/vim-floaterm) for the inspiration
