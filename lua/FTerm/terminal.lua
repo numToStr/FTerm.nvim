@@ -226,7 +226,10 @@ end
 function Term:run(command)
     self:open()
 
-    A.nvim_chan_send(self.terminal, U.build_cmd(command) .. A.nvim_replace_termcodes('<CR>', true, true, true))
+    A.nvim_chan_send(
+        self.terminal,
+        string.format('%s%s', U.build_cmd(command), A.nvim_replace_termcodes('<CR>', true, true, true))
+    )
 
     return self
 end
