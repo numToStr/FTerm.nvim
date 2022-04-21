@@ -93,7 +93,7 @@ Following options can be provided when calling [`setup()`](#setup). Below is the
 require('FTerm').open()
 
 -- or create a vim command
-vim.api.nvim_add_user_command('FTermOpen', require('FTerm').open, { bang = true })
+vim.api.nvim_create_user_command('FTermOpen', require('FTerm').open, { bang = true })
 ```
 
 - Closing the terminal
@@ -104,7 +104,7 @@ vim.api.nvim_add_user_command('FTermOpen', require('FTerm').open, { bang = true 
 require('FTerm').close()
 
 -- or create a vim command
-vim.api.nvim_add_user_command('FTermClose', require('FTerm').close, { bang = true })
+vim.api.nvim_create_user_command('FTermClose', require('FTerm').close, { bang = true })
 ```
 
 - Exiting the terminal
@@ -115,7 +115,7 @@ vim.api.nvim_add_user_command('FTermClose', require('FTerm').close, { bang = tru
 require('FTerm').exit()
 
 -- or create a vim command
-vim.api.nvim_add_user_command('FTermExit', require('FTerm').exit, { bang = true })
+vim.api.nvim_create_user_command('FTermExit', require('FTerm').exit, { bang = true })
 ```
 
 - Toggling the terminal
@@ -124,7 +124,7 @@ vim.api.nvim_add_user_command('FTermExit', require('FTerm').exit, { bang = true 
 require('FTerm').toggle()
 
 -- or create a vim command
-vim.api.nvim_add_user_command('FTermToggle', require('FTerm').toggle, { bang = true })
+vim.api.nvim_create_user_command('FTermToggle', require('FTerm').toggle, { bang = true })
 ```
 
 - Running commands
@@ -138,11 +138,11 @@ require('FTerm').run({'yarn', 'build'})
 require('FTerm').run({'node', vim.api.nvim_get_current_buf()})
 
 -- Or you can do this
-vim.api.nvim_add_user_command('ManLs', function()
+vim.api.nvim_create_user_command('ManLs', function()
     require('FTerm').run('man ls')
 end, { bang = true })
 
-vim.api.nvim_add_user_command('YarnBuild', function()
+vim.api.nvim_create_user_command('YarnBuild', function()
     require('FTerm').run({'yarn', 'build'})
 end, { bang = true })
 ```
@@ -158,11 +158,11 @@ require('FTerm').scratch({ cmd = 'yarn build' })
 require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv('RUST_TARGET')} })
 
 -- Scratch terminals are awesome because you can do this
-vim.api.nvim_add_user_command('YarnBuild', function()
+vim.api.nvim_create_user_command('YarnBuild', function()
     require('FTerm').scratch({ cmd = {'yarn', 'build'} })
 end, { bang = true })
 
-vim.api.nvim_add_user_command('CargoBuild', function()
+vim.api.nvim_create_user_command('CargoBuild', function()
     require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv("RUST_TARGET")} })
 end, { bang = true })
 ```
