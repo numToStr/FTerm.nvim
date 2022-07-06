@@ -48,7 +48,7 @@ function M.run(cmd)
 end
 
 ---To create a scratch (use and throw) terminal. Like those good ol' C++ build terminal.
----@param cfg Command
+---@param cfg Config
 function M.scratch(cfg)
     if not cfg then
         return vim.notify('FTerm: Please provide configuration for scratch terminal', vim.log.levels.ERROR)

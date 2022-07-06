@@ -76,9 +76,9 @@ end
 
 ---Creates a valid command from user's input
 ---@param cmd Command
----@return string
-function U.build_cmd(cmd)
-    return type(cmd) == 'table' and table.concat(cmd, ' ') or cmd
+---@return Command
+function U.is_cmd(cmd)
+    return type(cmd) == 'function' and cmd() or cmd --[[ @as string|string[] ]]
 end
 
 return U

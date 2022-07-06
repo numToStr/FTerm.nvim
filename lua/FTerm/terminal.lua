@@ -10,7 +10,7 @@ local cmd = A.nvim_command
 ---@class Term
 ---@field win WinId
 ---@field buf BufId
----@field terminal number Terminal's job id
+---@field terminal? number Terminal's job id
 ---@field config Config
 local Term = {}
 
@@ -33,7 +33,7 @@ function Term:setup(cfg)
     end
 
     self.config = vim.tbl_deep_extend('force', self.config, cfg)
-    self.config.cmd = U.build_cmd(self.config.cmd)
+    self.config.cmd = U.is_cmd(self.config.cmd)
 
     return self
 end
@@ -180,7 +180,7 @@ function Term:open()
 end
 
 ---Term:close does all the magic of closing terminal and clearing the buffers/windows
----@param force boolean If true, kill the terminal otherwise hide it
+---@param force? boolean If true, kill the terminal otherwise hide it
 ---@return Term
 function Term:close(force)
     if not U.is_win_valid(self.win) then
@@ -228,7 +228,7 @@ function Term:run(command)
 
     A.nvim_chan_send(
         self.terminal,
-        string.format('%s%s', U.build_cmd(command), A.nvim_replace_termcodes('<CR>', true, true, true))
+        string.format('%s%s', U.is_cmd(command), A.nvim_replace_termcodes('<CR>', true, true, true))
     )
 
     return self
