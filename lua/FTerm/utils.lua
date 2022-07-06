@@ -23,7 +23,7 @@ local U = {}
 ---@type Config
 U.defaults = {
     ft = 'FTerm',
-    cmd = os.getenv('SHELL'),
+    cmd = assert(os.getenv('SHELL'), '[FTerm] $SHELL is not present! Please provide a shell (`config.cmd`) to use.'),
     border = 'single',
     auto_close = true,
     hl = 'Normal',
@@ -78,7 +78,7 @@ end
 ---@param cmd Command
 ---@return Command
 function U.is_cmd(cmd)
-    return type(cmd) == 'function' and cmd() or cmd --[[ @as string|string[] ]]
+    return type(cmd) == 'function' and cmd() or cmd
 end
 
 return U
