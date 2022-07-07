@@ -23,7 +23,12 @@ local U = {}
 ---@type Config
 U.defaults = {
     ft = 'FTerm',
-    cmd = assert(os.getenv('SHELL'), '[FTerm] $SHELL is not present! Please provide a shell (`config.cmd`) to use.'),
+    cmd = function()
+        return assert(
+            os.getenv('SHELL'),
+            '[FTerm] $SHELL is not present! Please provide a shell (`config.cmd`) to use.'
+        )
+    end,
     border = 'single',
     auto_close = true,
     hl = 'Normal',

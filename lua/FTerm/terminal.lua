@@ -33,7 +33,6 @@ function Term:setup(cfg)
     end
 
     self.config = vim.tbl_deep_extend('force', self.config, cfg)
-    self.config.cmd = U.is_cmd(self.config.cmd)
 
     return self
 end
@@ -142,7 +141,7 @@ end
 ---@return Term
 function Term:open_term()
     -- NOTE: `termopen` will fails if the current buffer is modified
-    self.terminal = fn.termopen(self.config.cmd, {
+    self.terminal = fn.termopen(U.is_cmd(self.config.cmd), {
         on_stdout = self.config.on_stdout,
         on_stderr = self.config.on_stderr,
         on_exit = function(...)
