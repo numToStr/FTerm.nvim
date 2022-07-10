@@ -225,9 +225,14 @@ end
 function Term:run(command)
     self:open()
 
+    local exec = U.is_cmd(command)
+
     A.nvim_chan_send(
         self.terminal,
-        string.format('%s%s', U.is_cmd(command), A.nvim_replace_termcodes('<CR>', true, true, true))
+        table.concat({
+            type(exec) == 'table' and table.concat(exec, ' ') or exec,
+            A.nvim_replace_termcodes('<CR>', true, true, true),
+        })
     )
 
     return self
