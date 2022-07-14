@@ -121,12 +121,12 @@ end
 
 ---Term:handle_exit gracefully closed/kills the terminal
 ---@private
-function Term:handle_exit(...)
-    if self.config.auto_close then
+function Term:handle_exit(job_id, code, ...)
+    if self.config.auto_close and code == 0 then
         self:close(true)
     end
     if self.config.on_exit then
-        self.config.on_exit(...)
+        self.config.on_exit(job_id, code, ...)
     end
 end
 
