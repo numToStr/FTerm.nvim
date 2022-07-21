@@ -175,6 +175,18 @@ end, { bang = true })
 vim.api.nvim_create_user_command('CargoBuild', function()
     require('FTerm').scratch({ cmd = {'cargo', 'build', '--target', os.getenv("RUST_TARGET")} })
 end, { bang = true })
+
+-- Code Runner - execute commands in a floating terminal
+local runners = { lua = 'lua', javascript = 'node' }
+
+vim.keymap.set('n', '<leader><Enter>', function()
+    local buf = vim.api.nvim_buf_get_name(0)
+    local ftype = vim.filetype.match({ filename = buf })
+    local exec = runners[ftype]
+    if exec ~= nil then
+        require('FTerm').scratch({ cmd = { exec, buf } })
+    end
+end)
 ```
 
 <a id="custom-terminal"></a>
