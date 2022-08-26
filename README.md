@@ -78,6 +78,10 @@ Following options can be provided when calling [`setup()`](#setup). Below is the
         y = 0.5, -- Y axis of the terminal window
     },
 
+    ---Callback invoked when the terminal opens.
+    ---@type fun()|nil
+    on_open = nil,
+
     ---Callback invoked when the terminal exits.
     ---See `:h jobstart-options`
     ---@type fun()|nil

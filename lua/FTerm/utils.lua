@@ -15,6 +15,7 @@ local U = {}
 ---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
 ---@field hl string: Highlight group for the terminal buffer (default: `true`)
 ---@field blend number: Transparency of the floating window (default: `true`)
+---@field on_open function: Callback invoked when the terminal opens (default: `nil`)
 ---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
 ---@field on_stdout function: Callback invoked when the terminal emits stdout data (default: `nil`)
 ---@field on_stderr function: Callback invoked when the terminal emits stderr data (default: `nil`)

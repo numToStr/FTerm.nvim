@@ -152,6 +152,10 @@ function Term:open_term()
     -- This prevents the filetype being changed to `term` instead of `FTerm` when closing the floating window
     A.nvim_buf_set_option(self.buf, 'filetype', self.config.ft)
 
+    if self.config.on_open then
+        self.config.on_open(self)
+    end
+
     return self:prompt()
 end
 
