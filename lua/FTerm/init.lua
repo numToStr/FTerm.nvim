@@ -47,6 +47,11 @@ function M.run(cmd)
     t:run(cmd)
 end
 
+---Returns the job id of the terminal if it exists
+function M.get_job_id()
+  return t.terminal
+end
+
 ---To create a scratch (use and throw) terminal. Like those good ol' C++ build terminal.
 ---@param cfg Config
 function M.scratch(cfg)
