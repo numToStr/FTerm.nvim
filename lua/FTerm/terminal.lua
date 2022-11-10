@@ -66,8 +66,10 @@ function Term:restore_cursor()
             cmd(('silent! %s wincmd w'):format(self.prev_win))
         end
 
-        A.nvim_set_current_win(self.last_win)
-        A.nvim_win_set_cursor(self.last_win, self.last_pos)
+        if U.is_win_valid(self.last_win) then
+            A.nvim_set_current_win(self.last_win)
+            A.nvim_win_set_cursor(self.last_win, self.last_pos)
+        end
 
         self.last_win = nil
         self.prev_win = nil
