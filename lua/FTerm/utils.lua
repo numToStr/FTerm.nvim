@@ -15,6 +15,8 @@ local U = {}
 ---@field auto_close boolean: Close the terminal as soon as command exits (default: `true`)
 ---@field hl string: Highlight group for the terminal buffer (default: `true`)
 ---@field blend number: Transparency of the floating window (default: `true`)
+---@field clear_env boolean: Replace instead of extend the current environment with `env` (default: `false`)
+---@field env table: Map of environment variables extending the current environment (default: `nil`)
 ---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
 ---@field on_stdout function: Callback invoked when the terminal emits stdout data (default: `nil`)
 ---@field on_stderr function: Callback invoked when the terminal emits stderr data (default: `nil`)
@@ -33,6 +35,7 @@ U.defaults = {
     auto_close = true,
     hl = 'Normal',
     blend = 0,
+    clear_env = false,
     dimensions = {
         height = 0.8,
         width = 0.8,

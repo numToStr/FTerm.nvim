@@ -78,6 +78,16 @@ Following options can be provided when calling [`setup()`](#setup). Below is the
         y = 0.5, -- Y axis of the terminal window
     },
 
+    ---Replace instead of extend the current environment with `env`.
+    ---See `:h jobstart-options`
+    ---@type boolean
+    clear_env = false,
+
+    ---Map of environment variables extending the current environment.
+    ---See `:h jobstart-options`
+    ---@type table<string,string>|nil
+    env = nil,
+
     ---Callback invoked when the terminal exits.
     ---See `:h jobstart-options`
     ---@type fun()|nil
