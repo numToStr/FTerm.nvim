@@ -144,6 +144,8 @@ end
 function Term:open_term()
     -- NOTE: `termopen` will fails if the current buffer is modified
     self.terminal = fn.termopen(U.is_cmd(self.config.cmd), {
+        clear_env = self.config.clear_env,
+        env = self.config.env,
         on_stdout = self.config.on_stdout,
         on_stderr = self.config.on_stderr,
         on_exit = function(...)
