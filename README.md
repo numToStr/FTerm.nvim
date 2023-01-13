@@ -88,6 +88,10 @@ Following options can be provided when calling [`setup()`](#setup). Below is the
     ---@type table<string,string>|nil
     env = nil,
 
+    ---Callback invoked when the terminal buffer is created
+    ---@type fun(term: Term, bufnr: number)|nil
+    on_attach = nil,
+
     ---Callback invoked when the terminal exits.
     ---See `:h jobstart-options`
     ---@type fun()|nil
