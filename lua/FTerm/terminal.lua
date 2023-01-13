@@ -90,6 +90,9 @@ function Term:create_buf()
     end
 
     local buf = A.nvim_create_buf(false, true)
+    if self.config.on_attach then
+        self.config.on_attach(self, buf)
+    end
 
     -- this ensures filetype is set to Fterm on first run
     A.nvim_buf_set_option(buf, 'filetype', self.config.ft)

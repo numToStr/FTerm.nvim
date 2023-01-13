@@ -17,6 +17,7 @@ local U = {}
 ---@field blend number: Transparency of the floating window (default: `true`)
 ---@field clear_env boolean: Replace instead of extend the current environment with `env` (default: `false`)
 ---@field env table: Map of environment variables extending the current environment (default: `nil`)
+---@field on_attach function: Callback invoked when the terminal buffer is created (default: `nil`)
 ---@field on_exit function: Callback invoked when the terminal exits (default: `nil`)
 ---@field on_stdout function: Callback invoked when the terminal emits stdout data (default: `nil`)
 ---@field on_stderr function: Callback invoked when the terminal emits stderr data (default: `nil`)
