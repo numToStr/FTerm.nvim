@@ -51,6 +51,7 @@ end
 ---Term:remember_cursor stores the last cursor position and window
 ---@return Term
 function Term:remember_cursor()
+    self.last_tab = A.nvim_get_current_tabpage()
     self.last_win = A.nvim_get_current_win()
     self.prev_win = fn.winnr('#')
     self.last_pos = A.nvim_win_get_cursor(self.last_win)
@@ -67,10 +68,16 @@ function Term:restore_cursor()
         end
 
         if U.is_win_valid(self.last_win) then
-            A.nvim_set_current_win(self.last_win)
+            -- Only switch to last window if we are on the same tabpage.
+            -- Otherwise it is annoying to return to return to the another
+            -- tabpage only because of closing the terminal.
+            if self.last_tab == A.nvim_get_current_tabpage() then
+                A.nvim_set_current_win(self.last_win)
+            end
             A.nvim_win_set_cursor(self.last_win, self.last_pos)
         end
 
+        self.last_tab = nil
         self.last_win = nil
         self.prev_win = nil
         self.last_pos = nil
