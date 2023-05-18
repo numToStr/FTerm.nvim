@@ -59,8 +59,6 @@ function M.scratch(cfg)
         return vim.notify('FTerm: Please provide configuration for scratch terminal', vim.log.levels.ERROR)
     end
 
-    cfg.auto_close = false
-
     M:new(cfg):open()
 end
 
